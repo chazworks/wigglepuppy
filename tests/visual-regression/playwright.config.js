@@ -20,7 +20,7 @@ const config = defineConfig( {
 	globalSetup: undefined,
 	webServer: {
 		...baseConfig.webServer,
-		command: 'npm run env:start',
+		command: './bin/start.sh',
 	},
 } );
 

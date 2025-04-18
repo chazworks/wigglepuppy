@@ -16,6 +16,8 @@ This directory contains bash scripts that perform the same tasks as the npm scri
 - `cli.sh`: Runs WP-CLI commands in the Docker environment.
 - `logs.sh`: Shows the logs from the Docker containers.
 - `pull.sh`: Pulls the Docker images used by the project.
+- `test-php.sh`: Runs PHPUnit tests using Docker.
+- `reset-test-db.sh`: Resets the test database used by PHPUnit tests.
 
 ## Usage
 
@@ -33,6 +35,9 @@ All scripts are executable and can be run directly from the command line. For ex
 
 # Show the logs from the Docker containers
 ./bin/logs.sh
+
+# Reset the test database
+./bin/reset-test-db.sh
 ```
 
 ## Relationship to npm Scripts
@@ -49,5 +54,6 @@ These bash scripts are equivalent to the following npm scripts in package.json:
 - `cli.sh`: `npm run env:cli`
 - `logs.sh`: `npm run env:logs`
 - `pull.sh`: `npm run env:pull`
+- `test-php.sh`: `npm run test:php`
 
 The advantage of these bash scripts is that they can be run without nodejs, making them more lightweight and portable.

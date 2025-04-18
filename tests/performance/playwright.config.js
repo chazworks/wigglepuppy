@@ -30,7 +30,7 @@ const config = defineConfig( {
 	preserveOutput: 'never',
 	webServer: {
 		...baseConfig.webServer,
-		command: 'npm run env:start',
+		command: './bin/start.sh',
 	},
 	use: {
 		...baseConfig.use,
