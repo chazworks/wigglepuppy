@@ -56,9 +56,15 @@ $finder = PhpCsFixer\Finder::create()
     ->notPath('wp-content/languages/*')
     ->name('*.php');
 
+// Create .cache directory if it doesn't exist
+if (!is_dir(__DIR__ . '/.cache') && !mkdir(__DIR__ . '/.cache', 0755, true) && !is_dir(__DIR__ . '/.cache')) {
+    throw new \RuntimeException('Failed to create cache directory');
+}
+
 return (new PhpCsFixer\Config())
     ->setRules([
         '@PER-CS' => true,
         // Additional rules can be added here if needed
     ])
+    ->setCacheFile(__DIR__ . '/.cache/.php-cs-fixer.cache')
     ->setFinder($finder);
