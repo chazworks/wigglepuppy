@@ -1,0 +1,84 @@
+#!/bin/bash
+
+# Copy the default .env file when one is not present
+if [ ! -f .env ]; then
+  cp .env.example .env
+  echo "Created .env file from .env.example"
+else
+  echo ".env file already exists. .env.example was not copied."
+fi
+
+# Load environment variables from .env file
+if [ -f .env ]; then
+  export $(grep -v '^#' .env | xargs)
+fi
+
+# Source the get_compose_files function from docker.sh
+source bin/docker.sh
+
+# Determine if a non-default database authentication plugin needs to be used
+determine_auth_option() {
+  if [ "$LOCAL_DB_TYPE" != "mysql" ]; then
+    return
+  fi
+
+  if [ "$LOCAL_PHP" != "7.2-fpm" ] && [ "$LOCAL_PHP" != "7.3-fpm" ]; then
+    return
+  fi
+
+  # MySQL 8.4 removed --default-authentication-plugin in favor of --authentication-policy
+  if [ "$LOCAL_DB_VERSION" = "8.4" ]; then
+    export LOCAL_DB_AUTH_OPTION="--authentication-policy=mysql_native_password"
+  else
+    export LOCAL_DB_AUTH_OPTION="--default-authentication-plugin=mysql_native_password"
+  fi
+}
+
+determine_auth_option
+
+# Check if the Docker service is running
+if ! docker info > /dev/null 2>&1; then
+  echo "Could not retrieve Docker system info. Is the Docker service running?"
+  exit 1
+fi
+
+# Start the local-env containers
+CONTAINERS="wordpress-develop"
+if [ "$LOCAL_PHP_MEMCACHED" = "true" ]; then
+  CONTAINERS="wordpress-develop memcached"
+fi
+
+# Get compose files
+COMPOSE_FILES=$(get_compose_files)
+
+# Start the containers
+docker compose $COMPOSE_FILES up --quiet-pull -d $CONTAINERS
+
+# If Docker Toolbox is being used, we need to manually forward LOCAL_PORT to the Docker VM
+if [ -n "$DOCKER_TOOLBOX_INSTALL_PATH" ]; then
+  # VBoxManage is added to the PATH on every platform except Windows
+  VBOXMANAGE="VBoxManage"
+  if [ -n "$VBOX_MSI_INSTALL_PATH" ]; then
+    VBOXMANAGE="$VBOX_MSI_INSTALL_PATH/VBoxManage"
+  fi
+
+  # Check if the port forwarding is already configured for this port
+  VMINFO=$("$VBOXMANAGE" showvminfo "$DOCKER_MACHINE_NAME" --machinereadable)
+
+  # Delete rules that are using the port we need
+  echo "$VMINFO" | grep "^Forwarding" | while read -r line; do
+    # Parse the rule
+    RULE=$(echo "$line" | sed -E 's/^.*?"(.*)"$/\1/' | tr ',' ' ')
+    RULE_NAME=$(echo "$RULE" | awk '{print $1}')
+    RULE_HOST_PORT=$(echo "$RULE" | awk '{print $4}')
+    RULE_GUEST_PORT=$(echo "$RULE" | awk '{print $6}')
+
+    # Delete rules that are using the port we need
+    if [ "$RULE_HOST_PORT" = "$LOCAL_PORT" ] || [ "$RULE_GUEST_PORT" = "$LOCAL_PORT" ]; then
+      "$VBOXMANAGE" controlvm "$DOCKER_MACHINE_NAME" natpf1 delete "$RULE_NAME"
+    fi
+  done
+
+  # Add our port forwarding rule
+  "$VBOXMANAGE" controlvm "$DOCKER_MACHINE_NAME" natpf1 "tcp-port$LOCAL_PORT,tcp,127.0.0.1,$LOCAL_PORT,,$LOCAL_PORT"
+fi
