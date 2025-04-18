@@ -1,0 +1,74 @@
+# WordPress Development Project Guidelines for Junie
+
+## Project Overview
+This repository contains the WordPress development codebase. WordPress is a PHP, MySQL, and JavaScript based content management system that powers a significant portion of websites on the internet. This project follows specific development practices and workflows to maintain code quality and ensure proper functionality.
+
+## Project Structure
+- `src/` - Contains the core WordPress source code
+- `tests/` - Contains PHP unit tests and end-to-end tests
+- `tools/` - Development and build tools
+- `docs/` - Documentation files, including potential improvement tasks
+- Configuration files:
+  - PHP: `phpunit.xml.dist`, `phpcs.xml.dist`, `phpcompat.xml.dist`
+  - JavaScript: `webpack.config.js`, `jsdoc.conf.json`, `Gruntfile.js`
+  - Docker: `docker-compose.yml`
+  - WordPress: `wp-config-sample.php`, `wp-tests-config-sample.php`
+
+## Development Environment
+The project uses Docker for local development. The environment can be set up using:
+```
+npm install
+npm run build:dev
+npm run env:start
+npm run env:install
+```
+
+## Testing Requirements
+When making changes to the codebase, Junie should:
+
+1. Run appropriate tests to verify changes:
+   - For PHP changes: `npm run test:php`
+   - For end-to-end testing: `npm run test:e2e`
+   - For specific PHP tests: `npm run test:php -- --filter <test name>` or `npm run test:php -- --group <group name or ticket number>`
+
+2. Ensure that all tests pass before submitting changes.
+
+3. Consider adding new tests for new functionality or bug fixes.
+
+## Build Process
+Before submitting changes, Junie should build the project:
+- For development: `npm run build:dev`
+- For production: `npm run build`
+
+## Code Style Guidelines
+The project follows WordPress coding standards:
+
+1. PHP Code:
+   - Follow [WordPress PHP Coding Standards](https://make.wordpress.org/core/handbook/best-practices/coding-standards/php/)
+   - Use proper documentation blocks for functions and classes
+
+2. JavaScript Code:
+   - Follow [WordPress JavaScript Coding Standards](https://make.wordpress.org/core/handbook/best-practices/coding-standards/javascript/)
+   - Use modern JavaScript features supported by the build system
+
+3. CSS/SCSS:
+   - Follow [WordPress CSS Coding Standards](https://make.wordpress.org/core/handbook/best-practices/coding-standards/css/)
+
+## Contribution Workflow
+When working on tasks:
+
+1. Understand the issue or feature request thoroughly
+2. Make minimal, focused changes that address the specific issue
+3. Run appropriate tests to verify changes
+4. Build the project to ensure all assets are properly compiled
+5. Provide clear documentation for any new functionality
+6. Reference relevant documentation or tickets in commit messages
+
+## Improvement Tasks
+The repository includes a comprehensive list of potential improvement tasks in `docs/junie-tasks.md`. These tasks cover various aspects of the WordPress codebase including architecture, build system, testing, code quality, performance, security, user experience, documentation, and more.
+
+When working on these tasks, Junie should prioritize:
+- Maintaining backward compatibility
+- Following WordPress coding standards
+- Adding appropriate tests
+- Providing clear documentation
