@@ -12,24 +12,25 @@ use Rector\ValueObject\PhpVersion;
 return function (RectorConfig $rectorConfig): void {
     // Define paths to refactor
     $rectorConfig->paths([
-        __DIR__ . '/src'
+        __DIR__ . '/../../../src'
     ]);
 
     // Skip certain paths
     $rectorConfig->skip([
-        __DIR__ . '/src/wp-includes/ID3',
-        __DIR__ . '/src/wp-includes/IXR',
-        __DIR__ . '/src/wp-includes/PHPMailer',
-        __DIR__ . '/src/wp-includes/Requests',
-        __DIR__ . '/src/wp-includes/SimplePie',
-        __DIR__ . '/src/wp-includes/sodium_compat',
-        __DIR__ . '/src/wp-includes/Text',
+        __DIR__ . '/../../../src/wp-includes/ID3',
+        __DIR__ . '/../../../src/wp-includes/IXR',
+        __DIR__ . '/../../../src/wp-includes/PHPMailer',
+        __DIR__ . '/../../../src/wp-includes/Requests',
+        __DIR__ . '/../../../src/wp-includes/SimplePie',
+        __DIR__ . '/../../../src/wp-includes/sodium_compat',
+        __DIR__ . '/../../../src/wp-includes/Text',
+        __DIR__ . '/../../../vendor',
         // Add other third-party libraries to skip
     ]);
 
-    // Set PHP version - We can target PHP 8.4+ for internal implementation
+    // Set PHP version - We can target PHP 8.3+ for internal implementation
     // while maintaining API compatibility for plugins and themes
-    $rectorConfig->phpVersion(PhpVersion::PHP_84);
+    $rectorConfig->phpVersion(PhpVersion::PHP_83);
 
     // Apply rules by risk level
     $rectorConfig->rules(getLowRiskRules());
