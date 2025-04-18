@@ -453,11 +453,7 @@ class WP_Token_Map
 
             $term    = str_pad($word, $this->key_length + 1, "\x00", STR_PAD_RIGHT);
             $word_at = $ignore_case ? stripos($this->small_words, $term) : strpos($this->small_words, $term);
-            if (false === $word_at) {
-                return false;
-            }
-
-            return true;
+            return false !== $word_at;
         }
 
         $group_key = substr($word, 0, $this->key_length);

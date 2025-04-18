@@ -872,12 +872,7 @@ class WP_Site_Health
         if ($constant_name && ! defined($constant_name)) {
             return false;
         }
-
-        if ($class_name && ! class_exists($class_name)) {
-            return false;
-        }
-
-        return true;
+        return !($class_name && ! class_exists($class_name));
     }
 
     /**

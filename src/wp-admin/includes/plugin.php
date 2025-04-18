@@ -595,11 +595,7 @@ function is_plugin_active_for_network($plugin)
     }
 
     $plugins = get_site_option('active_sitewide_plugins');
-    if (isset($plugins[ $plugin ])) {
-        return true;
-    }
-
-    return false;
+    return isset($plugins[ $plugin ]);
 }
 
 /**
@@ -1289,11 +1285,7 @@ function is_uninstallable_plugin($plugin)
     $file = plugin_basename($plugin);
 
     $uninstallable_plugins = (array) get_option('uninstall_plugins');
-    if (isset($uninstallable_plugins[ $file ]) || file_exists(WP_PLUGIN_DIR . '/' . dirname($file) . '/uninstall.php')) {
-        return true;
-    }
-
-    return false;
+    return isset($uninstallable_plugins[ $file ]) || file_exists(WP_PLUGIN_DIR . '/' . dirname($file) . '/uninstall.php');
 }
 
 /**

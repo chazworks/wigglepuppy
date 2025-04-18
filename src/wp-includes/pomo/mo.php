@@ -95,12 +95,7 @@ if (! class_exists('MO', false)) :
             if (empty($entry->translations)) {
                 return false;
             }
-
-            if (! array_filter($entry->translations)) {
-                return false;
-            }
-
-            return true;
+            return (bool) array_filter($entry->translations);
         }
 
         /**

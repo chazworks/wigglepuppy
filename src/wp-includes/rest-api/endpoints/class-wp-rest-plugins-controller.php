@@ -844,12 +844,7 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller
         }
 
         $status = $request['status'];
-
-        if ($status && ! in_array($this->get_plugin_status($item['_file']), $status, true)) {
-            return false;
-        }
-
-        return true;
+        return !($status && ! in_array($this->get_plugin_status($item['_file']), $status, true));
     }
 
     /**

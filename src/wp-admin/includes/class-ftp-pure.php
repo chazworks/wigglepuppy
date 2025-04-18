@@ -103,10 +103,7 @@ class ftp_pure extends ftp_base
             return false;
         }
         $this->_lastaction = time();
-        if (!$this->_readmsg($fnction)) {
-            return false;
-        }
-        return true;
+        return (bool) $this->_readmsg($fnction);
     }
 
     public function _data_prepare($mode = FTP_ASCII)

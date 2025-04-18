@@ -68,17 +68,10 @@ function is_nav_menu($menu)
     }
 
     $menu_obj = wp_get_nav_menu_object($menu);
-
-    if (
-        $menu_obj &&
-        ! is_wp_error($menu_obj) &&
-        ! empty($menu_obj->taxonomy) &&
-        'nav_menu' === $menu_obj->taxonomy
-    ) {
-        return true;
-    }
-
-    return false;
+    return $menu_obj &&
+    ! is_wp_error($menu_obj) &&
+    ! empty($menu_obj->taxonomy) &&
+    'nav_menu' === $menu_obj->taxonomy;
 }
 
 /**

@@ -694,10 +694,7 @@ if (! class_exists('WP_User_Search', false)) :
          */
         public function results_are_paged()
         {
-            if ($this->paging_text) {
-                return true;
-            }
-            return false;
+            return (bool) $this->paging_text;
         }
 
         /**
@@ -710,10 +707,7 @@ if (! class_exists('WP_User_Search', false)) :
          */
         public function is_search()
         {
-            if ($this->search_term) {
-                return true;
-            }
-            return false;
+            return (bool) $this->search_term;
         }
     }
 endif;

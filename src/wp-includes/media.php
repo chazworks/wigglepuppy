@@ -4163,13 +4163,8 @@ function get_taxonomies_for_attachments($output = 'names')
  */
 function is_gd_image($image)
 {
-    if ($image instanceof GdImage
-        || is_resource($image) && 'gd' === get_resource_type($image)
-    ) {
-        return true;
-    }
-
-    return false;
+    return $image instanceof GdImage
+        || is_resource($image) && 'gd' === get_resource_type($image);
 }
 
 /**

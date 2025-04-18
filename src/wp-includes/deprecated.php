@@ -2811,12 +2811,7 @@ function is_plugin_page()
     _deprecated_function(__FUNCTION__, '3.1.0');
 
     global $plugin_page;
-
-    if (isset($plugin_page)) {
-        return true;
-    }
-
-    return false;
+    return isset($plugin_page);
 }
 
 /**
@@ -3631,11 +3626,7 @@ function user_pass_ok($user_login, $user_pass)
 {
     _deprecated_function(__FUNCTION__, '3.5.0', 'wp_authenticate()');
     $user = wp_authenticate($user_login, $user_pass);
-    if (is_wp_error($user)) {
-        return false;
-    }
-
-    return true;
+    return !is_wp_error($user);
 }
 
 /**
@@ -6670,7 +6661,7 @@ function the_block_template_skip_link()
 		sibling.parentElement.insertBefore( skipLink, sibling );
 	}() );
 	</script>
-	<?php
+<?php
 }
 
 /**

@@ -810,10 +810,7 @@ class WP_User
 
         // Multisite super admin has all caps by definition, Unless specifically denied.
         if (is_multisite() && is_super_admin($this->ID)) {
-            if (in_array('do_not_allow', $caps, true)) {
-                return false;
-            }
-            return true;
+            return !in_array('do_not_allow', $caps, true);
         }
 
         // Maintain BC for the argument passed to the "user_has_cap" filter.

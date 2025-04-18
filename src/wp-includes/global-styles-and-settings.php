@@ -383,10 +383,7 @@ function wp_get_block_name_from_theme_json_path($path)
         array_filter(
             $path,
             static function ($item) {
-                if (str_contains($item, 'core/')) {
-                    return true;
-                }
-                return false;
+                return str_contains($item, 'core/');
             },
         ),
     );

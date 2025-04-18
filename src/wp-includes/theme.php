@@ -1792,11 +1792,7 @@ function get_header_video_settings()
  */
 function has_custom_header()
 {
-    if (has_header_image() || (has_header_video() && is_header_video_active())) {
-        return true;
-    }
-
-    return false;
+    return has_header_image() || (has_header_video() && is_header_video_active());
 }
 
 /**

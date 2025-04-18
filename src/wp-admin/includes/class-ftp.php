@@ -487,10 +487,7 @@ class ftp_base
         if (!$this->_exec("CDUP", "cdup")) {
             return false;
         }
-        if (!$this->_checkCode()) {
-            return false;
-        }
-        return true;
+        return (bool) $this->_checkCode();
     }
 
     public function chdir($pathname)
@@ -498,10 +495,7 @@ class ftp_base
         if (!$this->_exec("CWD " . $pathname, "chdir")) {
             return false;
         }
-        if (!$this->_checkCode()) {
-            return false;
-        }
-        return true;
+        return (bool) $this->_checkCode();
     }
 
     public function rmdir($pathname)
@@ -509,10 +503,7 @@ class ftp_base
         if (!$this->_exec("RMD " . $pathname, "rmdir")) {
             return false;
         }
-        if (!$this->_checkCode()) {
-            return false;
-        }
-        return true;
+        return (bool) $this->_checkCode();
     }
 
     public function mkdir($pathname)
@@ -520,10 +511,7 @@ class ftp_base
         if (!$this->_exec("MKD " . $pathname, "mkdir")) {
             return false;
         }
-        if (!$this->_checkCode()) {
-            return false;
-        }
-        return true;
+        return (bool) $this->_checkCode();
     }
 
     public function rename($from, $to)
@@ -616,10 +604,7 @@ class ftp_base
         if (!$this->_exec("DELE " . $pathname, "delete")) {
             return false;
         }
-        if (!$this->_checkCode()) {
-            return false;
-        }
-        return true;
+        return (bool) $this->_checkCode();
     }
 
     public function site($command, $fnction = "site")
@@ -627,18 +612,12 @@ class ftp_base
         if (!$this->_exec("SITE " . $command, $fnction)) {
             return false;
         }
-        if (!$this->_checkCode()) {
-            return false;
-        }
-        return true;
+        return (bool) $this->_checkCode();
     }
 
     public function chmod($pathname, $mode)
     {
-        if (!$this->site(sprintf('CHMOD %o %s', $mode, $pathname), "chmod")) {
-            return false;
-        }
-        return true;
+        return (bool) $this->site(sprintf('CHMOD %o %s', $mode, $pathname), "chmod");
     }
 
     public function restore($from)
@@ -654,10 +633,7 @@ class ftp_base
         if (!$this->_exec("REST " . $from, "restore")) {
             return false;
         }
-        if (!$this->_checkCode()) {
-            return false;
-        }
-        return true;
+        return (bool) $this->_checkCode();
     }
 
     public function features()

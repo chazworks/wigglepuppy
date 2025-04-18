@@ -1745,12 +1745,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller
         if (! is_object($post_type)) {
             $post_type = get_post_type_object($post_type);
         }
-
-        if (! empty($post_type) && ! empty($post_type->show_in_rest)) {
-            return true;
-        }
-
-        return false;
+        return ! empty($post_type) && ! empty($post_type->show_in_rest);
     }
 
     /**
@@ -1787,16 +1782,11 @@ class WP_REST_Posts_Controller extends WP_REST_Controller
                 return $this->check_read_permission($parent);
             }
         }
-
         /*
          * If there isn't a parent, but the status is set to inherit, assume
          * it's published (as per get_post_status()).
          */
-        if ('inherit' === $post->post_status) {
-            return true;
-        }
-
-        return false;
+        return 'inherit' === $post->post_status;
     }
 
     /**

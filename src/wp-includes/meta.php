@@ -776,12 +776,7 @@ function metadata_exists($meta_type, $object_id, $meta_key)
         $meta_cache = update_meta_cache($meta_type, [ $object_id ]);
         $meta_cache = $meta_cache[ $object_id ];
     }
-
-    if (isset($meta_cache[ $meta_key ])) {
-        return true;
-    }
-
-    return false;
+    return isset($meta_cache[ $meta_key ]);
 }
 
 /**

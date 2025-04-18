@@ -476,12 +476,7 @@ class WP_Filesystem_ftpsockets extends WP_Filesystem_Base
         if ($this->is_dir($file)) {
             return false;
         }
-
-        if ($this->exists($file)) {
-            return true;
-        }
-
-        return false;
+        return $this->exists($file);
     }
 
     /**

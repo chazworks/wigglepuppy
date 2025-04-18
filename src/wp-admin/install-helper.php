@@ -213,12 +213,7 @@ function check_column($table_name, $col_name, $col_type, $is_null = null, $key =
             if ((null !== $extra) && ($row->Extra !== $extra)) {
                 ++$diffs;
             }
-
-            if ($diffs > 0) {
-                return false;
-            }
-
-            return true;
+            return !($diffs > 0);
         } // End if found our column.
     }
 

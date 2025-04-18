@@ -465,7 +465,6 @@ function wp_is_maintenance_mode()
             return false;
         }
     }
-
     /**
      * Filters whether to enable maintenance mode.
      *
@@ -479,11 +478,7 @@ function wp_is_maintenance_mode()
      * @param bool $enable_checks Whether to enable maintenance mode. Default true.
      * @param int  $upgrading     The timestamp set in the .maintenance file.
      */
-    if (! apply_filters('enable_maintenance_mode', true, $upgrading)) {
-        return false;
-    }
-
-    return true;
+    return (bool) apply_filters('enable_maintenance_mode', true, $upgrading);
 }
 
 /**
@@ -1271,12 +1266,7 @@ function is_protected_ajax_action()
      * @param string[] $actions_to_protect Array of strings with Ajax actions to protect.
      */
     $actions_to_protect = (array) apply_filters('wp_protected_ajax_actions', $actions_to_protect);
-
-    if (! in_array($_REQUEST['action'], $actions_to_protect, true)) {
-        return false;
-    }
-
-    return true;
+    return in_array($_REQUEST['action'], $actions_to_protect, true);
 }
 
 /**
@@ -1484,12 +1474,7 @@ function is_multisite()
     if (defined('MULTISITE')) {
         return MULTISITE;
     }
-
-    if (defined('SUBDOMAIN_INSTALL') || defined('VHOST') || defined('SUNRISE')) {
-        return true;
-    }
-
-    return false;
+    return defined('SUBDOMAIN_INSTALL') || defined('VHOST') || defined('SUNRISE');
 }
 
 /**
@@ -1769,13 +1754,8 @@ function wp_is_ini_value_changeable($setting)
     ) {
         return true;
     }
-
     // If we were unable to retrieve the details, fail gracefully to assume it's changeable.
-    if (! is_array($ini_all)) {
-        return true;
-    }
-
-    return false;
+    return ! is_array($ini_all);
 }
 
 /**
@@ -1967,12 +1947,7 @@ function wp_is_json_request()
     if (isset($_SERVER['HTTP_ACCEPT']) && wp_is_json_media_type($_SERVER['HTTP_ACCEPT'])) {
         return true;
     }
-
-    if (isset($_SERVER['CONTENT_TYPE']) && wp_is_json_media_type($_SERVER['CONTENT_TYPE'])) {
-        return true;
-    }
-
-    return false;
+    return isset($_SERVER['CONTENT_TYPE']) && wp_is_json_media_type($_SERVER['CONTENT_TYPE']);
 }
 
 /**
@@ -2048,12 +2023,7 @@ function wp_is_xml_request()
             }
         }
     }
-
-    if (isset($_SERVER['CONTENT_TYPE']) && in_array($_SERVER['CONTENT_TYPE'], $accepted, true)) {
-        return true;
-    }
-
-    return false;
+    return isset($_SERVER['CONTENT_TYPE']) && in_array($_SERVER['CONTENT_TYPE'], $accepted, true);
 }
 
 /**

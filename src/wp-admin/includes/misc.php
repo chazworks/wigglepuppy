@@ -852,12 +852,7 @@ function iis7_rewrite_rule_exists($filename)
 
     $xpath = new DOMXPath($doc);
     $rules = $xpath->query('/configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'wordpress\')] | /configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'WordPress\')]');
-
-    if (0 === $rules->length) {
-        return false;
-    }
-
-    return true;
+    return 0 !== $rules->length;
 }
 
 /**

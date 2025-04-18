@@ -2816,12 +2816,6 @@ function _wp_kses_allow_pdf_objects($url)
     $parsed_url  = wp_parse_url($upload_info['url']);
     $upload_host = isset($parsed_url['host']) ? $parsed_url['host'] : '';
     $upload_port = isset($parsed_url['port']) ? ':' . $parsed_url['port'] : '';
-
-    if (str_starts_with($url, "http://$upload_host$upload_port/")
-        || str_starts_with($url, "https://$upload_host$upload_port/")
-    ) {
-        return true;
-    }
-
-    return false;
+    return str_starts_with($url, "http://$upload_host$upload_port/")
+        || str_starts_with($url, "https://$upload_host$upload_port/");
 }

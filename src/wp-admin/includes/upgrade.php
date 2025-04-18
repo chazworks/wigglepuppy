@@ -2668,13 +2668,8 @@ function maybe_create_table($table_name, $create_ddl)
 
     // Didn't find it, so try to create it.
     $wpdb->query($create_ddl);
-
     // We cannot directly tell that whether this succeeded!
-    if ($wpdb->get_var($query) === $table_name) {
-        return true;
-    }
-
-    return false;
+    return $wpdb->get_var($query) === $table_name;
 }
 
 /**

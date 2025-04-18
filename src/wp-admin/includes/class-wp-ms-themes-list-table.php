@@ -285,12 +285,7 @@ class WP_MS_Themes_List_Table extends WP_List_Table
         if (false !== stripos($theme->get_stylesheet(), $term)) {
             return true;
         }
-
-        if (false !== stripos($theme->get_template(), $term)) {
-            return true;
-        }
-
-        return false;
+        return false !== stripos($theme->get_template(), $term);
     }
 
     // Not used by any core columns.

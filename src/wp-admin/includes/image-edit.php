@@ -355,12 +355,7 @@ function wp_stream_image($image, $mime_type, $attachment_id)
          * @param int             $attachment_id The attachment post ID.
          */
         $image = apply_filters('image_editor_save_pre', $image, $attachment_id);
-
-        if (is_wp_error($image->stream($mime_type))) {
-            return false;
-        }
-
-        return true;
+        return !is_wp_error($image->stream($mime_type));
     } else {
         /* translators: 1: $image, 2: WP_Image_Editor */
         _deprecated_argument(__FUNCTION__, '3.5.0', sprintf(__('%1$s needs to be a %2$s object.'), '$image', 'WP_Image_Editor'));

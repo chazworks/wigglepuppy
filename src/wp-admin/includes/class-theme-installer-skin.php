@@ -80,15 +80,9 @@ class Theme_Installer_Skin extends WP_Upgrader_Skin
      */
     public function hide_process_failed($wp_error)
     {
-        if (
-            'upload' === $this->type &&
-            '' === $this->overwrite &&
-            $wp_error->get_error_code() === 'folder_exists'
-        ) {
-            return true;
-        }
-
-        return false;
+        return 'upload' === $this->type &&
+        '' === $this->overwrite &&
+        $wp_error->get_error_code() === 'folder_exists';
     }
 
     /**

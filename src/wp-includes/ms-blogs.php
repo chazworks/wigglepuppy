@@ -319,12 +319,7 @@ function update_blog_details($blog_id, $details = [])
     }
 
     $site = wp_update_site($blog_id, $details);
-
-    if (is_wp_error($site)) {
-        return false;
-    }
-
-    return true;
+    return !is_wp_error($site);
 }
 
 /**

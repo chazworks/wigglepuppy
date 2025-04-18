@@ -37,11 +37,7 @@ function allow_subdomain_install()
 {
     $home   = get_option('home');
     $domain = parse_url($home, PHP_URL_HOST);
-    if (parse_url($home, PHP_URL_PATH) || 'localhost' === $domain || preg_match('|^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$|', $domain)) {
-        return false;
-    }
-
-    return true;
+    return !(parse_url($home, PHP_URL_PATH) || 'localhost' === $domain || preg_match('|^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$|', $domain));
 }
 
 /**
@@ -74,11 +70,7 @@ function allow_subdirectory_install()
     }
 
     $post = $wpdb->get_row("SELECT ID FROM $wpdb->posts WHERE post_date < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND post_status = 'publish'");
-    if (empty($post)) {
-        return true;
-    }
-
-    return false;
+    return empty($post);
 }
 
 /**
@@ -274,7 +266,7 @@ function network_step1($errors = false)
 			</tr>
 		</table>
 
-		<?php
+<?php
     endif;
 
     if (WP_CONTENT_DIR !== ABSPATH . 'wp-content' && (allow_subdirectory_install() || ! allow_subdomain_install())) {

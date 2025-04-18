@@ -44,16 +44,10 @@ class WP_Image_Editor_GD extends WP_Image_Editor
         if (! extension_loaded('gd') || ! function_exists('gd_info')) {
             return false;
         }
-
         // On some setups GD library does not provide imagerotate() - Ticket #11536.
-        if (isset($args['methods']) &&
+        return !(isset($args['methods']) &&
             in_array('rotate', $args['methods'], true) &&
-            ! function_exists('imagerotate')) {
-
-            return false;
-        }
-
-        return true;
+            ! function_exists('imagerotate'));
     }
 
     /**

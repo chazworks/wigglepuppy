@@ -36,6 +36,7 @@
 		"format": "@php ./vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix",
 		"lint": "@php ./vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --dry-run --diff",
 		"lint:errors": "@lint -n",
+		"rector": "@php ./vendor/bin/rector process",
 		"test": [ "Composer\\Config::disableProcessTimeout", "@php ./vendor/phpunit/phpunit/phpunit" ]
 	}
 }

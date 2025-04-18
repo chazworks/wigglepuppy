@@ -2246,10 +2246,7 @@ function wp_throttle_comment_flood($block, $time_lastcomment, $time_newcomment)
     if ($block) { // A plugin has already blocked... we'll let that decision stand.
         return $block;
     }
-    if (($time_newcomment - $time_lastcomment) < 15) {
-        return true;
-    }
-    return false;
+    return ($time_newcomment - $time_lastcomment) < 15;
 }
 
 /**

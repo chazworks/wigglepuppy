@@ -327,10 +327,7 @@ if (! class_exists('PO', false)) :
             if (false === $res) {
                 return false;
             }
-            if (! $this->headers && ! $this->entries) {
-                return false;
-            }
-            return true;
+            return !(! $this->headers && ! $this->entries);
         }
 
         /**

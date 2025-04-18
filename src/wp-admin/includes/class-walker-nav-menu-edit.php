@@ -249,7 +249,7 @@ class Walker_Nav_Menu_Edit extends Walker_Nav_Menu
                  * @since 6.7.0
                  */
         ?>
-	
+
 				<div class="field-move-combo description-group">
 					<p class="description description-wide">
 						<label for="edit-menu-item-parent-<?php echo $item_id; ?>">

@@ -128,22 +128,14 @@ function wp_force_plain_post_permalink($post = null, $sample = null)
     if (! $post_status_obj || ! $post_type_obj) {
         return true;
     }
-
-    if (
-        // Publicly viewable links never have plain permalinks.
-        is_post_status_viewable($post_status_obj) ||
-        (
-            // Private posts don't have plain permalinks if the user can read them.
-            $post_status_obj->private &&
-            current_user_can('read_post', $post->ID)
-        ) ||
-        // Protected posts don't have plain links if getting a sample URL.
-        ($post_status_obj->protected && $sample)
-    ) {
-        return false;
-    }
-
-    return true;
+    return !(is_post_status_viewable($post_status_obj) ||
+    (
+        // Private posts don't have plain permalinks if the user can read them.
+        $post_status_obj->private &&
+        current_user_can('read_post', $post->ID)
+    ) ||
+    // Protected posts don't have plain links if getting a sample URL.
+    ($post_status_obj->protected && $sample));
 }
 
 /**

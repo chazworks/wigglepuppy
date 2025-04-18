@@ -316,10 +316,5 @@ function wp_can_install_language_pack()
     $upgrader->init();
 
     $check = $upgrader->fs_connect([ WP_CONTENT_DIR, WP_LANG_DIR ]);
-
-    if (! $check || is_wp_error($check)) {
-        return false;
-    }
-
-    return true;
+    return !(! $check || is_wp_error($check));
 }

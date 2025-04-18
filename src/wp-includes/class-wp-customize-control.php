@@ -374,11 +374,7 @@ class WP_Customize_Control
         }
 
         $section = $this->manager->get_section($this->section);
-        if (isset($section) && ! $section->check_capabilities()) {
-            return false;
-        }
-
-        return true;
+        return !(isset($section) && ! $section->check_capabilities());
     }
 
     /**
@@ -662,7 +658,7 @@ class WP_Customize_Control
 							<button type="button" class="button add-content"><?php _e('Add'); ?></button>
 						</div>
 					</div>
-				<?php endif; ?>
+<?php endif; ?>
 				<?php
                 break;
             default:

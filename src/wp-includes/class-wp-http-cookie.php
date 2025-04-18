@@ -214,13 +214,8 @@ class WP_Http_Cookie
         if (! empty($port) && ! in_array($url['port'], array_map('intval', explode(',', $port)), true)) {
             return false;
         }
-
         // Path - request path must start with path restriction.
-        if (! str_starts_with($url['path'], $path)) {
-            return false;
-        }
-
-        return true;
+        return str_starts_with($url['path'], $path);
     }
 
     /**

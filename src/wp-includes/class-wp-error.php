@@ -183,10 +183,7 @@ class WP_Error
      */
     public function has_errors()
     {
-        if (! empty($this->errors)) {
-            return true;
-        }
-        return false;
+        return ! empty($this->errors);
     }
 
     /**

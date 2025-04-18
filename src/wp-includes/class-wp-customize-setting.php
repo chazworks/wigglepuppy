@@ -864,12 +864,7 @@ class WP_Customize_Setting
         if ($this->capability && ! current_user_can($this->capability)) {
             return false;
         }
-
-        if ($this->theme_supports && ! current_theme_supports(...(array) $this->theme_supports)) {
-            return false;
-        }
-
-        return true;
+        return !($this->theme_supports && ! current_theme_supports(...(array) $this->theme_supports));
     }
 
     /**

@@ -625,11 +625,7 @@ function _access_denied_splash()
  */
 function check_import_new_users($permission)
 {
-    if (! current_user_can('manage_network_users')) {
-        return false;
-    }
-
-    return true;
+    return current_user_can('manage_network_users');
 }
 // See "import_allow_fetch_attachments" and "import_attachment_size_limit" filters too.
 
@@ -821,7 +817,7 @@ function choose_primary_blog()
 		</td>
 	</tr>
 	</table>
-	<?php
+<?php
 }
 
 /**
