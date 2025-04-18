@@ -68,31 +68,43 @@ This document outlines a comprehensive plan to use Rector, a PHP code refactorin
 
 ## Effective Rector Rules for WordPress
 
-A sample Rector configuration file has been created at `tools/rector/config/wordpress-rector-config.php` that organizes rules by risk level. The rules are categorized into three functions:
+Rector rules for WordPress should be organized by risk level. The rules can be categorized into three groups:
 
-1. `getLowRiskRules()` - Rules that can be safely applied to the entire codebase
-2. `getMediumRiskRules()` - Rules that should be applied carefully, primarily to internal implementation code
-3. `getHighRiskRules()` - Rules that should be applied with extreme caution, especially to public APIs
+1. **Low Risk Rules** - Rules that can be safely applied to the entire codebase
+2. **Medium Risk Rules** - Rules that should be applied carefully, primarily to internal implementation code
+3. **High Risk Rules** - Rules that should be applied with extreme caution, especially to public APIs
 
-Each category contains at least 8 rules with appropriate documentation. The configuration file is set up to apply only low-risk rules by default, with options to enable medium and high-risk rules as needed.
+Each category should contain appropriate rules with documentation. The configuration should be set up to apply only low-risk rules by default, with options to enable medium and high-risk rules as needed.
 
 ### Sample Usage
 
 ```php
 // Apply only low-risk rules (default)
-$rectorConfig->rules(getLowRiskRules());
+$rectorConfig->rules([
+    // List of low-risk rules
+    SimplifyIfReturnBoolRector::class,
+    // Add more low-risk rules here
+]);
 
 // Apply medium-risk rules to internal implementation code
-$rectorConfig->rules(getMediumRiskRules());
+$rectorConfig->rules([
+    // List of medium-risk rules
+    // Add medium-risk rules here
+]);
 
 // Apply high-risk rules after thorough analysis
-$rectorConfig->rules(getHighRiskRules());
+$rectorConfig->rules([
+    // List of high-risk rules
+    // Add high-risk rules here
+]);
 
 // Apply multiple rule sets
-$rectorConfig->rules(array_merge(
-    getLowRiskRules(),
-    getMediumRiskRules()
-));
+$rectorConfig->rules([
+    // Low-risk rules
+    SimplifyIfReturnBoolRector::class,
+    // Medium-risk rules
+    // Add more rules here
+]);
 ```
 
 ### Risk Considerations
