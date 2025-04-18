@@ -35,6 +35,8 @@ The following caveats must be strictly observed during the rebranding process:
    - "wordpress" → "wigglepuppy"
    - "WORDPRESS" → "WIGGLEPUPPY"
 
+6. **Co-occurrence of Terms**: Lines containing both "wordpress" and "wigglepuppy" (in any casing) on the same line must remain unchanged. These lines should be appropriately noted in generated documentation.
+
 ## Methodology for Finding Instances to Replace
 
 ### Search Patterns
