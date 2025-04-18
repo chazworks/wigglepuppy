@@ -28,6 +28,7 @@ npm run env:install
   - PHP: `npm run test:php`
   - E2E: `npm run test:e2e`
   - Specific PHP tests: `npm run test:php -- --filter <test name>` or `--group <group/ticket>`
+- When invoking phpunit directly, always run it on individual files, never on the entire test suite
 - Ensure all tests pass before submission
 - Add tests for new functionality/fixes
 
