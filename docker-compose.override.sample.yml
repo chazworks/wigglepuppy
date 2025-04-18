@@ -1,0 +1,12 @@
+services:
+  wp-develop:
+    ports:
+      - "8889:80"
+
+  wp-db:
+    ports:
+      - "3306:3306"
+
+  wp-memcached:
+    ports:
+      - "11211:11211"

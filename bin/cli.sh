@@ -4,4 +4,4 @@
 source bin/docker.sh
 
 # Run WP-CLI commands in the Docker environment
-bin/docker.sh run --rm cli "$@"
+bin/docker.sh run --rm wp-cli "$@"

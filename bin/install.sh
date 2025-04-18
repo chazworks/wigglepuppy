@@ -31,11 +31,11 @@ determine_auth_option
 # Function to run WP-CLI commands in the Docker environment
 wp_cli() {
   COMPOSE_FILES=$(get_compose_files)
-  docker compose $COMPOSE_FILES run --quiet-pull --rm cli $1 --path=/var/www/${LOCAL_DIR}
+  docker compose $COMPOSE_FILES run --quiet-pull --rm wp-cli $1 --path=/var/www/${LOCAL_DIR}
 }
 
 # Create wp-config.php
-wp_cli "config create --dbname=wordpress_develop --dbuser=root --dbpass=password --dbhost=mysql --force"
+wp_cli "config create --dbname=wordpress_develop --dbuser=root --dbpass=password --dbhost=wp-db --force"
 
 # Add the debug settings to wp-config.php
 wp_cli "config set WP_DEBUG ${LOCAL_WP_DEBUG} --raw --type=constant"
@@ -52,7 +52,7 @@ mv "${LOCAL_DIR}/wp-config.php" wp-config.php
 sed -e "s/youremptytestdbnamehere/wordpress_develop_tests/" \
     -e "s/yourusernamehere/root/" \
     -e "s/yourpasswordhere/password/" \
-    -e "s/localhost/mysql/" \
+    -e "s/localhost/wp-db/" \
     -e "s/'WP_TESTS_DOMAIN', 'example.org'/'WP_TESTS_DOMAIN', '${LOCAL_WP_TESTS_DOMAIN}'/" \
     wp-tests-config-sample.php > wp-tests-config.php
 

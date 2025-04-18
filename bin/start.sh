@@ -43,9 +43,9 @@ if ! docker info > /dev/null 2>&1; then
 fi
 
 # Start the local-env containers
-CONTAINERS="wordpress-develop"
+CONTAINERS="wp-develop"
 if [ "$LOCAL_PHP_MEMCACHED" = "true" ]; then
-  CONTAINERS="wordpress-develop memcached"
+  CONTAINERS="wp-develop wp-memcached"
 fi
 
 # Get compose files

@@ -23,7 +23,7 @@ When opening your codespace, be sure to wait for the `postCreateCommand` to fini
 
 ### Local development
 
-WordPress is a PHP, MySQL, and JavaScript based project, and uses Node for its JavaScript dependencies. A local development environment is available to quickly get up and running.
+WordPress is a PHP, MariaDB, and JavaScript based project, and uses Node for its JavaScript dependencies. A local development environment is available to quickly get up and running.
 
 You will need a basic understanding of how to use the command line on your computer. This will allow you to set up the local development environment, to start it and stop it when necessary, and to run the tests.
 
@@ -139,23 +139,6 @@ The development environment can be reset. This will destroy the database and att
 npm run env:reset
 ```
 
-### Apple Silicon machines and old MySQL/MariaDB versions
-
-Older MySQL and MariaDB Docker images do not support Apple Silicon processors (M1, M2, etc.). This is true for:
-
-- MySQL versions 5.7 and earlier
-- MariaDB 5.5
-
-When using these versions on an Apple Silicon machine, you must create a `docker-compose.override.yml` file with the following contents:
-
-```
-services:
-
-  mysql:
-    platform: linux/amd64
-```
-
-Additionally, the "Use Rosetta for x86/AMD64 emulation on Apple Silicon" setting in Docker needs to be disabled for this workaround.
 
 ## Credentials
 
