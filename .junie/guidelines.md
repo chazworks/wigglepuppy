@@ -9,7 +9,7 @@ This repository contains the WordPress development codebase. WordPress is a PHP,
 - `tools/` - Development and build tools
 - `docs/` - Documentation files, including potential improvement tasks
 - Configuration files:
-  - PHP: `phpunit.xml.dist`, `phpcs.xml.dist`, `phpcompat.xml.dist`
+  - PHP: `phpunit.xml.dist`, `.php-cs-fixer.dist.php`, `phpcompat.xml.dist`
   - JavaScript: `webpack.config.js`, `jsdoc.conf.json`, `Gruntfile.js`
   - Docker: `docker-compose.yml`
   - WordPress: `wp-config-sample.php`, `wp-tests-config-sample.php`
@@ -41,11 +41,12 @@ Before submitting changes, Junie should build the project:
 - For production: `npm run build`
 
 ## Code Style Guidelines
-The project follows WordPress coding standards:
+The project follows modern coding standards:
 
 1. PHP Code:
-   - Follow [WordPress PHP Coding Standards](https://make.wordpress.org/core/handbook/best-practices/coding-standards/php/)
+   - Follow [PHP-FIG PER-CS Coding Standards](https://www.php-fig.org/per-cs/)
    - Use proper documentation blocks for functions and classes
+   - Code is automatically formatted using php-cs-fixer
 
 2. JavaScript Code:
    - Follow [WordPress JavaScript Coding Standards](https://make.wordpress.org/core/handbook/best-practices/coding-standards/javascript/)
@@ -69,7 +70,7 @@ The repository includes a comprehensive list of potential improvement tasks in `
 
 When working on these tasks, Junie should prioritize:
 - Maintaining backward compatibility
-- Following WordPress coding standards
+- Following modern PHP standards
 - Adding appropriate tests
 - Providing clear documentation
 

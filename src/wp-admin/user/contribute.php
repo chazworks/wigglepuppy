@@ -1,4 +1,5 @@
 <?php
+
 /**
  * User Dashboard Contribute administration panel.
  *

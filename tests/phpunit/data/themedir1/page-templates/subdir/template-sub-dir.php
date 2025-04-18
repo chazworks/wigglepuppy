@@ -1,5 +1,5 @@
 <?php
+
 /*
-   Template Name: Sub Dir 
+   Template Name: Sub Dir
  */
-?>

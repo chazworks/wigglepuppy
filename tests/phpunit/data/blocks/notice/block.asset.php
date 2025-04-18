@@ -1,6 +1,6 @@
 <?php
 
-return array(
-	'dependencies' => array(),
-	'version'      => 'test',
-);
+return [
+    'dependencies' => [],
+    'version'      => 'test',
+];

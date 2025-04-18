@@ -8,259 +8,276 @@
  */
 require_once __DIR__ . '/base.php';
 
-abstract class WP_Tests_Image_Resize_UnitTestCase extends WP_Image_UnitTestCase {
+abstract class WP_Tests_Image_Resize_UnitTestCase extends WP_Image_UnitTestCase
+{
+    public function set_up()
+    {
+        parent::set_up();
 
-	public function set_up() {
-		parent::set_up();
+        add_filter('wp_image_editors', [ $this, 'wp_image_editors' ]);
+    }
 
-		add_filter( 'wp_image_editors', array( $this, 'wp_image_editors' ) );
-	}
+    public function wp_image_editors()
+    {
+        return [ $this->editor_engine ];
+    }
 
-	public function wp_image_editors() {
-		return array( $this->editor_engine );
-	}
+    public function test_resize_jpg()
+    {
+        $image = $this->resize_helper(DIR_TESTDATA . '/images/test-image.jpg', 25, 25);
+
+        list($w, $h, $type) = getimagesize($image);
+
+        unlink($image);
+
+        $this->assertSame('test-image-25x25.jpg', wp_basename($image));
+        $this->assertSame(25, $w);
+        $this->assertSame(25, $h);
+        $this->assertSame(IMAGETYPE_JPEG, $type);
+    }
+
+    public function test_resize_png()
+    {
+        $image = $this->resize_helper(DIR_TESTDATA . '/images/test-image.png', 25, 25);
+
+        if (! is_string($image)) {  // WP_Error, stop GLib-GObject-CRITICAL assertion.
+            $this->fail(sprintf('No PNG support in the editor engine %s on this system.', $this->editor_engine));
+        }
 
-	public function test_resize_jpg() {
-		$image = $this->resize_helper( DIR_TESTDATA . '/images/test-image.jpg', 25, 25 );
+        list($w, $h, $type) = getimagesize($image);
+
+        unlink($image);
+
+        $this->assertSame('test-image-25x25.png', wp_basename($image));
+        $this->assertSame(25, $w);
+        $this->assertSame(25, $h);
+        $this->assertSame(IMAGETYPE_PNG, $type);
+    }
+
+    public function test_resize_gif()
+    {
+        $image = $this->resize_helper(DIR_TESTDATA . '/images/test-image.gif', 25, 25);
+
+        if (! is_string($image)) {  // WP_Error, stop GLib-GObject-CRITICAL assertion.
+            $this->fail(sprintf('No GIF support in the editor engine %s on this system.', $this->editor_engine));
+        }
+
+        list($w, $h, $type) = getimagesize($image);
 
-		list( $w, $h, $type ) = getimagesize( $image );
+        unlink($image);
 
-		unlink( $image );
+        $this->assertSame('test-image-25x25.gif', wp_basename($image));
+        $this->assertSame(25, $w);
+        $this->assertSame(25, $h);
+        $this->assertSame(IMAGETYPE_GIF, $type);
+    }
 
-		$this->assertSame( 'test-image-25x25.jpg', wp_basename( $image ) );
-		$this->assertSame( 25, $w );
-		$this->assertSame( 25, $h );
-		$this->assertSame( IMAGETYPE_JPEG, $type );
-	}
+    public function test_resize_webp()
+    {
+        $file   = DIR_TESTDATA . '/images/test-image.webp';
+        $editor = wp_get_image_editor($file);
 
-	public function test_resize_png() {
-		$image = $this->resize_helper( DIR_TESTDATA . '/images/test-image.png', 25, 25 );
+        // Check if the editor supports the webp mime type.
+        if (is_wp_error($editor) || ! $editor->supports_mime_type('image/webp')) {
+            $this->markTestSkipped(sprintf('No WebP support in the editor engine %s on this system.', $this->editor_engine));
+        }
 
-		if ( ! is_string( $image ) ) {  // WP_Error, stop GLib-GObject-CRITICAL assertion.
-			$this->fail( sprintf( 'No PNG support in the editor engine %s on this system.', $this->editor_engine ) );
-		}
+        $image = $this->resize_helper($file, 25, 25);
 
-		list( $w, $h, $type ) = getimagesize( $image );
+        list($w, $h, $type) = wp_getimagesize($image);
 
-		unlink( $image );
+        unlink($image);
 
-		$this->assertSame( 'test-image-25x25.png', wp_basename( $image ) );
-		$this->assertSame( 25, $w );
-		$this->assertSame( 25, $h );
-		$this->assertSame( IMAGETYPE_PNG, $type );
-	}
+        $this->assertSame('test-image-25x25.webp', wp_basename($image));
+        $this->assertSame(25, $w);
+        $this->assertSame(25, $h);
+        $this->assertSame(IMAGETYPE_WEBP, $type);
+    }
 
-	public function test_resize_gif() {
-		$image = $this->resize_helper( DIR_TESTDATA . '/images/test-image.gif', 25, 25 );
+    /**
+     * Test resizing AVIF image.
+     *
+     * @ticket 51228
+     */
+    public function test_resize_avif()
+    {
+        $file   = DIR_TESTDATA . '/images/avif-lossy.avif';
+        $editor = wp_get_image_editor($file);
 
-		if ( ! is_string( $image ) ) {  // WP_Error, stop GLib-GObject-CRITICAL assertion.
-			$this->fail( sprintf( 'No GIF support in the editor engine %s on this system.', $this->editor_engine ) );
-		}
+        // Check if the editor supports the avif mime type.
+        if (is_wp_error($editor) || ! $editor->supports_mime_type('image/avif')) {
+            $this->markTestSkipped(sprintf('No AVIF support in the editor engine %s on this system.', $this->editor_engine));
+        }
 
-		list( $w, $h, $type ) = getimagesize( $image );
+        $image = $this->resize_helper($file, 25, 25);
 
-		unlink( $image );
+        list($w, $h, $type) = wp_getimagesize($image);
 
-		$this->assertSame( 'test-image-25x25.gif', wp_basename( $image ) );
-		$this->assertSame( 25, $w );
-		$this->assertSame( 25, $h );
-		$this->assertSame( IMAGETYPE_GIF, $type );
-	}
+        unlink($image);
 
-	public function test_resize_webp() {
-		$file   = DIR_TESTDATA . '/images/test-image.webp';
-		$editor = wp_get_image_editor( $file );
+        $this->assertSame('avif-lossy-25x25.avif', wp_basename($image));
+        $this->assertSame(25, $w);
+        $this->assertSame(25, $h);
+        $this->assertSame(IMAGETYPE_AVIF, $type);
+    }
 
-		// Check if the editor supports the webp mime type.
-		if ( is_wp_error( $editor ) || ! $editor->supports_mime_type( 'image/webp' ) ) {
-			$this->markTestSkipped( sprintf( 'No WebP support in the editor engine %s on this system.', $this->editor_engine ) );
-		}
+    /**
+     * Test resizing HEIC image.
+     *
+     * @ticket 53645
+     */
+    public function test_resize_heic()
+    {
+        $file   = DIR_TESTDATA . '/images/test-image.heic';
+        $editor = wp_get_image_editor($file);
 
-		$image = $this->resize_helper( $file, 25, 25 );
+        // Check if the editor supports the HEIC mime type.
+        if (is_wp_error($editor) || ! $editor->supports_mime_type('image/heic')) {
+            $this->markTestSkipped('No HEIC support in the editor engine on this system.');
+        }
 
-		list( $w, $h, $type ) = wp_getimagesize( $image );
+        $image = $this->resize_helper($file, 25, 25);
 
-		unlink( $image );
+        list($w, $h, $type) = wp_getimagesize($image);
 
-		$this->assertSame( 'test-image-25x25.webp', wp_basename( $image ) );
-		$this->assertSame( 25, $w );
-		$this->assertSame( 25, $h );
-		$this->assertSame( IMAGETYPE_WEBP, $type );
-	}
+        unlink($image);
 
-	/**
-	 * Test resizing AVIF image.
-	 *
-	 * @ticket 51228
-	 */
-	public function test_resize_avif() {
-		$file   = DIR_TESTDATA . '/images/avif-lossy.avif';
-		$editor = wp_get_image_editor( $file );
+        $this->assertSame('test-image-25x25.jpg', wp_basename($image));
+        $this->assertSame(25, $w);
+        $this->assertSame(25, $h);
+        $this->assertSame(IMAGETYPE_JPEG, $type);
+    }
 
-		// Check if the editor supports the avif mime type.
-		if ( is_wp_error( $editor ) || ! $editor->supports_mime_type( 'image/avif' ) ) {
-			$this->markTestSkipped( sprintf( 'No AVIF support in the editor engine %s on this system.', $this->editor_engine ) );
-		}
+    public function test_resize_larger()
+    {
+        // image_resize() should refuse to make an image larger.
+        $image = $this->resize_helper(DIR_TESTDATA . '/images/test-image.jpg', 100, 100);
 
-		$image = $this->resize_helper( $file, 25, 25 );
+        $this->assertInstanceOf('WP_Error', $image);
+        $this->assertSame('error_getting_dimensions', $image->get_error_code());
+    }
 
-		list( $w, $h, $type ) = wp_getimagesize( $image );
+    public function test_resize_thumb_128x96()
+    {
+        $image = $this->resize_helper(DIR_TESTDATA . '/images/2007-06-17DSC_4173.JPG', 128, 96);
 
-		unlink( $image );
+        list($w, $h, $type) = getimagesize($image);
 
-		$this->assertSame( 'avif-lossy-25x25.avif', wp_basename( $image ) );
-		$this->assertSame( 25, $w );
-		$this->assertSame( 25, $h );
-		$this->assertSame( IMAGETYPE_AVIF, $type );
-	}
+        unlink($image);
 
-	/**
-	 * Test resizing HEIC image.
-	 *
-	 * @ticket 53645
-	 */
-	public function test_resize_heic() {
-		$file   = DIR_TESTDATA . '/images/test-image.heic';
-		$editor = wp_get_image_editor( $file );
+        $this->assertSame('2007-06-17DSC_4173-64x96.jpg', wp_basename($image));
+        $this->assertSame(64, $w);
+        $this->assertSame(96, $h);
+        $this->assertSame(IMAGETYPE_JPEG, $type);
+    }
 
-		// Check if the editor supports the HEIC mime type.
-		if ( is_wp_error( $editor ) || ! $editor->supports_mime_type( 'image/heic' ) ) {
-			$this->markTestSkipped( 'No HEIC support in the editor engine on this system.' );
-		}
+    public function test_resize_thumb_128x0()
+    {
+        $image = $this->resize_helper(DIR_TESTDATA . '/images/2007-06-17DSC_4173.JPG', 128, 0);
 
-		$image = $this->resize_helper( $file, 25, 25 );
+        list($w, $h, $type) = getimagesize($image);
 
-		list( $w, $h, $type ) = wp_getimagesize( $image );
+        unlink($image);
 
-		unlink( $image );
+        $this->assertSame('2007-06-17DSC_4173-128x193.jpg', wp_basename($image));
+        $this->assertSame(128, $w);
+        $this->assertSame(193, $h);
+        $this->assertSame(IMAGETYPE_JPEG, $type);
+    }
 
-		$this->assertSame( 'test-image-25x25.jpg', wp_basename( $image ) );
-		$this->assertSame( 25, $w );
-		$this->assertSame( 25, $h );
-		$this->assertSame( IMAGETYPE_JPEG, $type );
-	}
+    public function test_resize_thumb_0x96()
+    {
+        $image = $this->resize_helper(DIR_TESTDATA . '/images/2007-06-17DSC_4173.JPG', 0, 96);
 
-	public function test_resize_larger() {
-		// image_resize() should refuse to make an image larger.
-		$image = $this->resize_helper( DIR_TESTDATA . '/images/test-image.jpg', 100, 100 );
+        list($w, $h, $type) = getimagesize($image);
 
-		$this->assertInstanceOf( 'WP_Error', $image );
-		$this->assertSame( 'error_getting_dimensions', $image->get_error_code() );
-	}
+        unlink($image);
 
-	public function test_resize_thumb_128x96() {
-		$image = $this->resize_helper( DIR_TESTDATA . '/images/2007-06-17DSC_4173.JPG', 128, 96 );
+        $this->assertSame('2007-06-17DSC_4173-64x96.jpg', wp_basename($image));
+        $this->assertSame(64, $w);
+        $this->assertSame(96, $h);
+        $this->assertSame(IMAGETYPE_JPEG, $type);
+    }
 
-		list( $w, $h, $type ) = getimagesize( $image );
+    public function test_resize_thumb_150x150_crop()
+    {
+        $image = $this->resize_helper(DIR_TESTDATA . '/images/2007-06-17DSC_4173.JPG', 150, 150, true);
 
-		unlink( $image );
+        list($w, $h, $type) = getimagesize($image);
 
-		$this->assertSame( '2007-06-17DSC_4173-64x96.jpg', wp_basename( $image ) );
-		$this->assertSame( 64, $w );
-		$this->assertSame( 96, $h );
-		$this->assertSame( IMAGETYPE_JPEG, $type );
-	}
+        unlink($image);
 
-	public function test_resize_thumb_128x0() {
-		$image = $this->resize_helper( DIR_TESTDATA . '/images/2007-06-17DSC_4173.JPG', 128, 0 );
+        $this->assertSame('2007-06-17DSC_4173-150x150.jpg', wp_basename($image));
+        $this->assertSame(150, $w);
+        $this->assertSame(150, $h);
+        $this->assertSame(IMAGETYPE_JPEG, $type);
+    }
 
-		list( $w, $h, $type ) = getimagesize( $image );
+    public function test_resize_thumb_150x100_crop()
+    {
+        $image = $this->resize_helper(DIR_TESTDATA . '/images/2007-06-17DSC_4173.JPG', 150, 100, true);
 
-		unlink( $image );
+        list($w, $h, $type) = getimagesize($image);
 
-		$this->assertSame( '2007-06-17DSC_4173-128x193.jpg', wp_basename( $image ) );
-		$this->assertSame( 128, $w );
-		$this->assertSame( 193, $h );
-		$this->assertSame( IMAGETYPE_JPEG, $type );
-	}
+        unlink($image);
 
-	public function test_resize_thumb_0x96() {
-		$image = $this->resize_helper( DIR_TESTDATA . '/images/2007-06-17DSC_4173.JPG', 0, 96 );
+        $this->assertSame('2007-06-17DSC_4173-150x100.jpg', wp_basename($image));
+        $this->assertSame(150, $w);
+        $this->assertSame(100, $h);
+        $this->assertSame(IMAGETYPE_JPEG, $type);
+    }
 
-		list( $w, $h, $type ) = getimagesize( $image );
+    public function test_resize_thumb_50x150_crop()
+    {
+        $image = $this->resize_helper(DIR_TESTDATA . '/images/2007-06-17DSC_4173.JPG', 50, 150, true);
 
-		unlink( $image );
+        list($w, $h, $type) = getimagesize($image);
 
-		$this->assertSame( '2007-06-17DSC_4173-64x96.jpg', wp_basename( $image ) );
-		$this->assertSame( 64, $w );
-		$this->assertSame( 96, $h );
-		$this->assertSame( IMAGETYPE_JPEG, $type );
-	}
+        unlink($image);
 
-	public function test_resize_thumb_150x150_crop() {
-		$image = $this->resize_helper( DIR_TESTDATA . '/images/2007-06-17DSC_4173.JPG', 150, 150, true );
+        $this->assertSame('2007-06-17DSC_4173-50x150.jpg', wp_basename($image));
+        $this->assertSame(50, $w);
+        $this->assertSame(150, $h);
+        $this->assertSame(IMAGETYPE_JPEG, $type);
+    }
 
-		list( $w, $h, $type ) = getimagesize( $image );
+    /**
+     * Try resizing a non-existent image
+     *
+     * @ticket 6821
+     */
+    public function test_resize_non_existent_image()
+    {
+        $image = $this->resize_helper(DIR_TESTDATA . '/images/test-non-existent-image.jpg', 25, 25);
 
-		unlink( $image );
+        $this->assertInstanceOf('WP_Error', $image);
+        $this->assertSame('error_loading_image', $image->get_error_code());
+    }
 
-		$this->assertSame( '2007-06-17DSC_4173-150x150.jpg', wp_basename( $image ) );
-		$this->assertSame( 150, $w );
-		$this->assertSame( 150, $h );
-		$this->assertSame( IMAGETYPE_JPEG, $type );
-	}
+    /**
+     * Function to help out the tests
+     */
+    protected function resize_helper($file, $width, $height, $crop = false)
+    {
+        $editor = wp_get_image_editor($file);
 
-	public function test_resize_thumb_150x100_crop() {
-		$image = $this->resize_helper( DIR_TESTDATA . '/images/2007-06-17DSC_4173.JPG', 150, 100, true );
+        if (is_wp_error($editor)) {
+            return $editor;
+        }
 
-		list( $w, $h, $type ) = getimagesize( $image );
+        $resized = $editor->resize($width, $height, $crop);
 
-		unlink( $image );
+        if (is_wp_error($resized)) {
+            return $resized;
+        }
 
-		$this->assertSame( '2007-06-17DSC_4173-150x100.jpg', wp_basename( $image ) );
-		$this->assertSame( 150, $w );
-		$this->assertSame( 100, $h );
-		$this->assertSame( IMAGETYPE_JPEG, $type );
-	}
+        $dest_file = $editor->generate_filename();
+        $saved     = $editor->save($dest_file);
 
-	public function test_resize_thumb_50x150_crop() {
-		$image = $this->resize_helper( DIR_TESTDATA . '/images/2007-06-17DSC_4173.JPG', 50, 150, true );
+        if (is_wp_error($saved)) {
+            return $saved;
+        }
 
-		list( $w, $h, $type ) = getimagesize( $image );
-
-		unlink( $image );
-
-		$this->assertSame( '2007-06-17DSC_4173-50x150.jpg', wp_basename( $image ) );
-		$this->assertSame( 50, $w );
-		$this->assertSame( 150, $h );
-		$this->assertSame( IMAGETYPE_JPEG, $type );
-	}
-
-	/**
-	 * Try resizing a non-existent image
-	 *
-	 * @ticket 6821
-	 */
-	public function test_resize_non_existent_image() {
-		$image = $this->resize_helper( DIR_TESTDATA . '/images/test-non-existent-image.jpg', 25, 25 );
-
-		$this->assertInstanceOf( 'WP_Error', $image );
-		$this->assertSame( 'error_loading_image', $image->get_error_code() );
-	}
-
-	/**
-	 * Function to help out the tests
-	 */
-	protected function resize_helper( $file, $width, $height, $crop = false ) {
-		$editor = wp_get_image_editor( $file );
-
-		if ( is_wp_error( $editor ) ) {
-			return $editor;
-		}
-
-		$resized = $editor->resize( $width, $height, $crop );
-
-		if ( is_wp_error( $resized ) ) {
-			return $resized;
-		}
-
-		$dest_file = $editor->generate_filename();
-		$saved     = $editor->save( $dest_file );
-
-		if ( is_wp_error( $saved ) ) {
-			return $saved;
-		}
-
-		return $saved['path'];
-	}
+        return $saved['path'];
+    }
 }

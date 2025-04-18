@@ -1,4 +1,5 @@
 <?php
+
 /**
  * IXR - The Incutio XML-RPC Library
  *
@@ -40,8 +41,8 @@
  */
 
 // Don't load directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	die( '-1' );
+if (! defined('ABSPATH')) {
+    die('-1');
 }
 
 require_once ABSPATH . WPINC . '/IXR/class-IXR-server.php';

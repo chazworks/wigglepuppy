@@ -19,13 +19,13 @@
 <html <?php language_attributes(); ?>>
 <!--<![endif]-->
 <head>
-	<meta charset="<?php bloginfo( 'charset' ); ?>">
+	<meta charset="<?php bloginfo('charset'); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title><?php wp_title( '|', true, 'right' ); ?></title>
+	<title><?php wp_title('|', true, 'right'); ?></title>
 	<link rel="profile" href="https://gmpg.org/xfn/11">
-	<link rel="pingback" href="<?php echo esc_url( get_bloginfo( 'pingback_url' ) ); ?>">
+	<link rel="pingback" href="<?php echo esc_url(get_bloginfo('pingback_url')); ?>">
 	<!--[if lt IE 9]>
-	<script src="<?php echo esc_url( get_template_directory_uri() ); ?>/js/html5.js?ver=3.7.0"></script>
+	<script src="<?php echo esc_url(get_template_directory_uri()); ?>/js/html5.js?ver=3.7.0"></script>
 	<![endif]-->
 	<?php wp_head(); ?>
 </head>
@@ -34,15 +34,15 @@
 <?php wp_body_open(); ?>
 <a class="screen-reader-text skip-link" href="#content">
 	<?php
-	/* translators: Hidden accessibility text. */
-	_e( 'Skip to content', 'twentyfourteen' );
-	?>
+    /* translators: Hidden accessibility text. */
+    _e('Skip to content', 'twentyfourteen');
+?>
 </a>
 <div id="page" class="hfeed site">
-	<?php $is_front = ! is_paged() && ( is_front_page() || ( is_home() && ( (int) get_option( 'page_for_posts' ) !== get_queried_object_id() ) ) ); ?>
-	<?php if ( get_header_image() ) : ?>
+	<?php $is_front = ! is_paged() && (is_front_page() || (is_home() && ((int) get_option('page_for_posts') !== get_queried_object_id()))); ?>
+	<?php if (get_header_image()) : ?>
 	<div id="site-header">
-		<a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" <?php echo $is_front ? 'aria-current="page"' : ''; ?>>
+		<a href="<?php echo esc_url(home_url('/')); ?>" rel="home" <?php echo $is_front ? 'aria-current="page"' : ''; ?>>
 			<?php twentyfourteen_header_image(); ?>
 		</a>
 	</div>
@@ -50,28 +50,28 @@
 
 	<header id="masthead" class="site-header">
 		<div class="header-main">
-			<h1 class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" <?php echo $is_front ? 'aria-current="page"' : ''; ?>><?php bloginfo( 'name' ); ?></a></h1>
+			<h1 class="site-title"><a href="<?php echo esc_url(home_url('/')); ?>" rel="home" <?php echo $is_front ? 'aria-current="page"' : ''; ?>><?php bloginfo('name'); ?></a></h1>
 
 			<div class="search-toggle">
 				<a href="#search-container" class="screen-reader-text" aria-expanded="false" aria-controls="search-container">
 					<?php
-					/* translators: Hidden accessibility text. */
-					_e( 'Search', 'twentyfourteen' );
-					?>
+                /* translators: Hidden accessibility text. */
+                _e('Search', 'twentyfourteen');
+?>
 				</a>
 			</div>
 
 			<nav id="primary-navigation" class="site-navigation primary-navigation">
-				<button class="menu-toggle"><?php _e( 'Primary Menu', 'twentyfourteen' ); ?></button>
+				<button class="menu-toggle"><?php _e('Primary Menu', 'twentyfourteen'); ?></button>
 				<?php
-				wp_nav_menu(
-					array(
-						'theme_location' => 'primary',
-						'menu_class'     => 'nav-menu',
-						'menu_id'        => 'primary-menu',
-					)
-				);
-				?>
+                wp_nav_menu(
+                    [
+                        'theme_location' => 'primary',
+                        'menu_class'     => 'nav-menu',
+                        'menu_id'        => 'primary-menu',
+                    ],
+                );
+?>
 			</nav>
 		</div>
 

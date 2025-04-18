@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Network Privacy administration panel.
  *
