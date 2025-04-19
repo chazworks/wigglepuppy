@@ -72,5 +72,7 @@ For JetBrains Junie generated files:
 2. For code files: comment at top
 3. No notice needed for edits to existing files
 4. Generated scripts should never prompt or block indefinitely on input unless specifically instructed to do so
+5. All generated output files (except markdown) must be checked for valid syntax
+6. Output generation scripts must include validity checks to ensure proper output
 
 Examples in `docs/junie-tasks.md` and `bin/README.md`
