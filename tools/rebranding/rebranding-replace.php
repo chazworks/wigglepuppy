@@ -11,7 +11,7 @@
 
 // Configuration
 $extensions = ['js', 'html', 'css', 'txt', 'md', 'xml', 'json'];
-$rootDir = dirname(__DIR__);
+$rootDir = dirname(dirname(__DIR__));
 $outputDir = $rootDir . '/docs/rebranding';
 $logFile = $outputDir . '/rebranding-replace-log.md';
 

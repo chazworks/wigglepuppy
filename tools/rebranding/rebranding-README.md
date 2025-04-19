@@ -16,7 +16,7 @@ This script analyzes the codebase to create a comprehensive inventory of "WordPr
 
 **Usage:**
 ```bash
-php tools/rebranding-inventory.php
+php tools/rebranding/rebranding-inventory.php
 ```
 
 **Output:**
@@ -25,7 +25,7 @@ php tools/rebranding-inventory.php
 
 ### 2. Custom Rector Rules
 
-**Directory:** `rector/src/Rebranding/`
+**Directory:** `tools/rebranding/rector/src/Rebranding/`
 
 Contains custom Rector rules for replacing "WordPress" with "WigglePuppy" in PHP files:
 
@@ -42,7 +42,7 @@ This script performs regex-based replacements of "WordPress" with "WigglePuppy" 
 
 **Usage:**
 ```bash
-php tools/rebranding-replace.php
+php tools/rebranding/rebranding-replace.php
 ```
 
 **Output:**
@@ -57,7 +57,7 @@ This is the main script that executes the entire rebranding process by running R
 
 **Usage:**
 ```bash
-php tools/rebranding-execute.php
+php tools/rebranding/bin/rebranding-execute.php
 ```
 
 **Process:**
@@ -76,11 +76,11 @@ php tools/rebranding-execute.php
 The complete rebranding process follows these steps:
 
 1. **Phase 1: Analysis and Preparation**
-   - Generate a comprehensive inventory using `rebranding-inventory.php`
+   - Generate a comprehensive inventory using `tools/rebranding/rebranding-inventory.php`
    - Review the inventory to understand the scope of changes
 
 2. **Phase 2: Implementation**
-   - Step 1: Execute automated replacements using `rebranding-execute.php`
+   - Step 1: Execute automated replacements using `tools/rebranding/bin/rebranding-execute.php`
    - Step 2: Manually review and adjust any instances that were incorrectly changed or missed
    - Step 3: Update documentation to reflect the new branding
 

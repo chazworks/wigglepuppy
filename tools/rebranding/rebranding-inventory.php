@@ -11,7 +11,7 @@
 
 // Configuration
 $extensions = ['php', 'js', 'html', 'css', 'txt', 'md', 'xml', 'json'];
-$rootDir = dirname(__DIR__);
+$rootDir = dirname(dirname(__DIR__));
 $outputDir = $rootDir . '/docs/rebranding';
 
 // Create output directory if it doesn't exist

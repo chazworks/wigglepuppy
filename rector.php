@@ -30,7 +30,7 @@ return function (RectorConfig $rectorConfig): void {
 
     // Register autoloader for custom rules
     $rectorConfig->autoloadPaths([
-        __DIR__ . '/tools/rector/src'
+        __DIR__ . '/tools/rebranding/rector/src'
     ]);
 
     // Apply rules

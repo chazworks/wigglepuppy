@@ -10,7 +10,8 @@
  */
 
 // Configuration
-$rootDir = dirname(__DIR__);
+$rootDir = dirname(dirname(dirname(__DIR__)));
+$rebrandingDir = dirname(__DIR__);
 $outputDir = $rootDir . '/docs/rebranding';
 $completionFile = $outputDir . '/phase2-step1-completion.md';
 
@@ -54,7 +55,7 @@ echo "Rector run completed successfully.\n";
 
 // Step 2: Run regex replacements for non-PHP files
 echo "\n=== Running regex replacements for non-PHP files ===\n";
-$regexCommand = "php " . __DIR__ . "/rebranding-replace.php";
+$regexCommand = "php " . $rebrandingDir . "/rebranding-replace.php";
 $regexOutput = executeCommand($regexCommand);
 echo "Regex replacements completed successfully.\n";
 

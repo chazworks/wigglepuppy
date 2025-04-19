@@ -1,0 +1,13 @@
+This is a WordPress test file.
+This is a wordpress test file.
+This is a WORDPRESS test file.
+
+// These should not be replaced:
+$wordpress_variable = 'test';
+function wordpress_function() {}
+Visit wordpress.org for more information.
+Copyright (c) WordPress Foundation.
+This is a wordpress.php file.
+
+// This line has both wordpress and wigglepuppy and should not be changed.
+This is a wordpress to wigglepuppy conversion test.
