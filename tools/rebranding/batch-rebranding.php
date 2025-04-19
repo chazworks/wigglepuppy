@@ -212,12 +212,50 @@ function scanDirectory($dir, $extensions, $gitignorePatterns, $rootDir) {
 }
 
 // Function to check if a line should be skipped
-function shouldSkipLine($line, $skipPatterns) {
+function shouldSkipLine($line, $skipPatterns, &$skipReason = null) {
+    // Skip empty lines
+    if (trim($line) === '') {
+        return true;
+    }
+
+    // Define skip pattern descriptions for logging
+    $patternDescriptions = [
+        '/copyright.*wordpress|author.*wordpress/i' => 'Copyright notice or author attribution',
+        '/\$[a-zA-Z0-9_]*wordpress[a-zA-Z0-9_]*/i' => 'PHP variable name',
+        '/function\s+[a-zA-Z0-9_]*wordpress[a-zA-Z0-9_]*|[a-zA-Z0-9_]*wordpress[a-zA-Z0-9_]*\s*\(/i' => 'PHP function name',
+        '/class\s+[a-zA-Z0-9_]*WordPress[a-zA-Z0-9_]*/i' => 'PHP class name',
+        '/namespace\s+[a-zA-Z0-9_\\\\]*WordPress[a-zA-Z0-9_\\\\]*/i' => 'PHP namespace',
+        '/const\s+[a-zA-Z0-9_]*WORDPRESS[a-zA-Z0-9_]*/i' => 'PHP constant',
+        '/[\'"][a-zA-Z0-9_\/\.\-]*wordpress[a-zA-Z0-9_\/\.\-]*[\'"]/i' => 'Filename or path',
+        '/https?:\/\/[a-zA-Z0-9_\.\-]*wordpress[a-zA-Z0-9_\.\-]*/i' => 'URL',
+        '/[\'"]\/wp-[a-zA-Z0-9_\/\.\-]*[\'"]/i' => 'WordPress path',
+        '/wordpress\s+team|wordpress\s+foundation|wordpress\s+community|by\s+wordpress/i' => 'WordPress as organization',
+        '/visit\s+wordpress\.org|wordpress\.org\s+for/i' => 'WordPress.org reference',
+        '/\b[a-zA-Z0-9_]*wordpress[a-zA-Z0-9_]*\b\s*[:=]/i' => 'JavaScript variable',
+        '/\b[a-zA-Z0-9_]*wordpress[a-zA-Z0-9_]*\b\s*\(/i' => 'JavaScript function',
+        '/@wordpress\/[a-zA-Z0-9_\-]*/i' => 'npm namespace',
+        '/.*wordpress.*wigglepuppy.*|.*wigglepuppy.*wordpress.*/i' => 'Co-occurrence of WordPress and WigglePuppy'
+    ];
+
     foreach ($skipPatterns as $pattern) {
         if (preg_match($pattern, $line)) {
+            // Set the skip reason if the pattern is in our descriptions
+            if (isset($patternDescriptions[$pattern])) {
+                $skipReason = $patternDescriptions[$pattern];
+            } else {
+                $skipReason = 'Matched skip pattern';
+            }
             return true;
         }
     }
+
+    // Check for package/module names (additional check not in original skipPatterns)
+    if (preg_match('/package\s+[a-zA-Z0-9_]*wordpress[a-zA-Z0-9_]*/i', $line) ||
+        preg_match('/module\s+[a-zA-Z0-9_]*wordpress[a-zA-Z0-9_]*/i', $line)) {
+        $skipReason = 'Package or module name';
+        return true;
+    }
+
     return false;
 }
 
@@ -246,7 +284,11 @@ function processFile($filePath, $skipPatterns, $replacementPatterns, &$log, &$ma
     $lines = explode($lineEnding, $content);
     $modified = false;
     $replacements = 0;
-    $fileManifest = [];
+    $skipped = 0;
+    $fileManifest = [
+        'replacements' => [],
+        'skipped' => []
+    ];
 
     foreach ($lines as $i => $line) {
         // Skip empty lines
@@ -254,51 +296,74 @@ function processFile($filePath, $skipPatterns, $replacementPatterns, &$log, &$ma
             continue;
         }
 
-        // Skip lines that match skip patterns
-        if (shouldSkipLine($line, $skipPatterns)) {
-            continue;
-        }
+        // Check if line contains "WordPress" in any form
+        if (preg_match('/wordpress/i', $line)) {
+            $skipReason = null;
 
-        // Replace WordPress with WigglePuppy while preserving whitespace
-        $newLine = replaceWordPress($line, $replacementPatterns);
+            // Check if line should be skipped due to caveats
+            if (shouldSkipLine($line, $skipPatterns, $skipReason)) {
+                $skipped++;
 
-        // If the line was changed, update it
-        if ($newLine !== $line) {
-            $lines[$i] = $newLine;
-            $modified = true;
-            $replacements++;
+                // Log the skipped line
+                $log['skipped'][] = [
+                    'file' => $filePath,
+                    'line' => $i + 1,
+                    'content' => $line,
+                    'reason' => $skipReason
+                ];
 
-            // Log the replacement
-            $log[] = [
-                'file' => $filePath,
-                'line' => $i + 1,
-                'before' => $line,
-                'after' => $newLine
-            ];
+                // Add to file manifest
+                $fileManifest['skipped'][] = [
+                    'line' => $i + 1,
+                    'content' => $line,
+                    'reason' => $skipReason
+                ];
 
-            // Add to file manifest
-            $fileManifest[] = [
-                'line' => $i + 1,
-                'before' => $line,
-                'after' => $newLine
-            ];
+                continue;
+            }
+
+            // Replace WordPress with WigglePuppy while preserving whitespace
+            $newLine = replaceWordPress($line, $replacementPatterns);
+
+            // If the line was changed, update it
+            if ($newLine !== $line) {
+                $lines[$i] = $newLine;
+                $modified = true;
+                $replacements++;
+
+                // Log the replacement
+                $log['replacements'][] = [
+                    'file' => $filePath,
+                    'line' => $i + 1,
+                    'before' => $line,
+                    'after' => $newLine
+                ];
+
+                // Add to file manifest
+                $fileManifest['replacements'][] = [
+                    'line' => $i + 1,
+                    'before' => $line,
+                    'after' => $newLine
+                ];
+            }
         }
     }
 
     // If the file was modified, write the changes back preserving original line endings
     if ($modified) {
         file_put_contents($filePath, implode($lineEnding, $lines));
-
-        // Add to manifest
-        $manifest[$filePath] = [
-            'replacements' => $replacements,
-            'changes' => $fileManifest
-        ];
-
-        return $replacements;
     }
 
-    return 0;
+    // Add to manifest if there were any replacements or skipped lines
+    if ($replacements > 0 || $skipped > 0) {
+        $manifest[$filePath] = [
+            'replacements' => $replacements,
+            'skipped' => $skipped,
+            'changes' => $fileManifest
+        ];
+    }
+
+    return ['replacements' => $replacements, 'skipped' => $skipped];
 }
 
 // Function to write log to file
@@ -312,7 +377,8 @@ function writeLog($log, $logFile, $processedFiles, $totalFiles, $maxFilesToProce
         $content .= "- Files processed: $processedFiles out of $totalFiles available (no limit applied)\n";
     }
     $content .= "- Files modified: " . count($log['files']) . "\n";
-    $content .= "- Total replacements made: " . $log['totalReplacements'] . "\n\n";
+    $content .= "- Total replacements made: " . $log['totalReplacements'] . "\n";
+    $content .= "- Total lines skipped due to caveats: " . $log['totalSkipped'] . "\n\n";
 
     $content .= "## Replacements\n\n";
     $content .= "| File | Line | Before | After |\n";
@@ -322,6 +388,16 @@ function writeLog($log, $logFile, $processedFiles, $totalFiles, $maxFilesToProce
         $escapedBefore = str_replace('|', '\\|', $replacement['before']);
         $escapedAfter = str_replace('|', '\\|', $replacement['after']);
         $content .= "| {$replacement['file']} | {$replacement['line']} | `$escapedBefore` | `$escapedAfter` |\n";
+    }
+
+    // Add section for skipped lines
+    $content .= "\n## Lines Skipped Due to Caveats\n\n";
+    $content .= "| File | Line | Content | Reason |\n";
+    $content .= "|------|------|---------|--------|\n";
+
+    foreach ($log['skipped'] as $skipped) {
+        $escapedContent = str_replace('|', '\\|', $skipped['content']);
+        $content .= "| {$skipped['file']} | {$skipped['line']} | `$escapedContent` | {$skipped['reason']} |\n";
     }
 
     file_put_contents($logFile, $content);
@@ -348,7 +424,9 @@ echo "Found " . count($files) . " files to process.\n";
 $log = [
     'files' => [],
     'replacements' => [],
-    'totalReplacements' => 0
+    'skipped' => [],
+    'totalReplacements' => 0,
+    'totalSkipped' => 0
 ];
 $manifest = [];
 
@@ -362,11 +440,17 @@ foreach ($files as $file) {
         break;
     }
 
-    $replacements = processFile($file, $skipPatterns, $replacementPatterns, $log['replacements'], $manifest);
+    $result = processFile($file, $skipPatterns, $replacementPatterns, $log, $manifest);
+    $replacements = $result['replacements'];
+    $skipped = $result['skipped'];
 
     if ($replacements > 0) {
         $log['files'][] = $file;
         $log['totalReplacements'] += $replacements;
+    }
+
+    if ($skipped > 0) {
+        $log['totalSkipped'] += $skipped;
     }
 
     $processedFiles++;
@@ -390,5 +474,6 @@ if ($maxFilesToProcess !== null) {
 }
 echo "Total files modified: " . count($log['files']) . "\n";
 echo "Total replacements made: " . $log['totalReplacements'] . "\n";
+echo "Total lines skipped due to caveats: " . $log['totalSkipped'] . "\n";
 echo "Log file: $logFile\n";
 echo "Manifest file: $manifestFile\n";

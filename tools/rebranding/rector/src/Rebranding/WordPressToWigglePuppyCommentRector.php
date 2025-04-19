@@ -7,12 +7,33 @@ use PhpParser\Node;
 use Rector\Core\Rector\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Psr\Log\LoggerInterface;
 
 /**
  * Replaces 'WordPress' with 'WigglePuppy' in comments, preserving case.
  */
 final class WordPressToWigglePuppyCommentRector extends AbstractRector
 {
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @var string
+     */
+    private $logFile;
+
+    public function __construct(LoggerInterface $logger = null)
+    {
+        $this->logger = $logger;
+        $this->logFile = dirname(dirname(dirname(dirname(dirname(__DIR__))))) . '/docs/rebranding/rector-skipped.log';
+
+        // Create log file if it doesn't exist
+        if (!file_exists($this->logFile)) {
+            file_put_contents($this->logFile, "# WordPress to WigglePuppy Rector Skipped Items Log\n\n");
+        }
+    }
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -44,6 +65,23 @@ CODE_SAMPLE
         return [Node::class];
     }
 
+    /**
+     * Log a skipped comment with the reason
+     */
+    private function logSkippedComment(string $text, string $reason, string $file = null, int $line = null): void
+    {
+        // Log to PSR logger if available
+        if ($this->logger) {
+            $this->logger->info("Skipped comment: {$text} - Reason: {$reason}");
+        }
+
+        // Always log to file
+        $fileInfo = $file ? " in {$file}" : "";
+        $lineInfo = $line ? " on line {$line}" : "";
+        $logEntry = date('Y-m-d H:i:s') . "{$fileInfo}{$lineInfo}: Skipped comment: `{$text}` - Reason: {$reason}\n";
+        file_put_contents($this->logFile, $logEntry, FILE_APPEND);
+    }
+
     public function refactor(Node $node): ?Node
     {
         // Get all comments attached to this node
@@ -52,18 +90,46 @@ CODE_SAMPLE
             return null;
         }
 
+        // Get file and line information for logging
+        $fileInfo = $node->getAttribute('file');
+        $lineInfo = $node->getAttribute('line');
+
         $modified = false;
 
         foreach ($comments as $key => $comment) {
             $text = $comment->getText();
 
+            // Skip if the comment doesn't contain "wordpress" in any form
+            if (!preg_match('/wordpress/i', $text)) {
+                continue;
+            }
+
+            // Check for package/module names
+            if (preg_match('/package\s+[a-zA-Z0-9_]*wordpress[a-zA-Z0-9_]*/i', $text) ||
+                preg_match('/module\s+[a-zA-Z0-9_]*wordpress[a-zA-Z0-9_]*/i', $text)) {
+                $this->logSkippedComment($text, 'Package or module name', $fileInfo, $lineInfo);
+                continue;
+            }
+
             // Skip if the comment contains patterns we shouldn't replace
-            if (preg_match('/wordpress\.org|wordpress\.com|function.*wordpress|class.*wordpress|\$.*wordpress|copyright.*wordpress|author.*wordpress/i', $text)) {
+            if (preg_match('/wordpress\.org|wordpress\.com/i', $text)) {
+                $this->logSkippedComment($text, 'URL or domain', $fileInfo, $lineInfo);
+                continue;
+            }
+
+            if (preg_match('/function.*wordpress|class.*wordpress|\$.*wordpress/i', $text)) {
+                $this->logSkippedComment($text, 'PHP identifier', $fileInfo, $lineInfo);
+                continue;
+            }
+
+            if (preg_match('/copyright.*wordpress|author.*wordpress/i', $text)) {
+                $this->logSkippedComment($text, 'Copyright notice or author attribution', $fileInfo, $lineInfo);
                 continue;
             }
 
             // Skip if the comment contains both "wordpress" and "wigglepuppy" (co-occurrence)
             if (preg_match('/.*wordpress.*wigglepuppy.*|.*wigglepuppy.*wordpress.*/i', $text)) {
+                $this->logSkippedComment($text, 'Co-occurrence of WordPress and WigglePuppy', $fileInfo, $lineInfo);
                 continue;
             }
 
