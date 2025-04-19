@@ -1,0 +1,8 @@
+# This file follows .gitignore syntax
+# Lines starting with # are comments
+# Lines starting with ! are negated patterns (files to include)
+# * matches any number of characters
+# / at the end of a pattern matches directories
+
+Gruntfile.js
+package-lock.json

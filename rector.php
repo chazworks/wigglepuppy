@@ -25,6 +25,9 @@ return function (RectorConfig $rectorConfig): void {
         __DIR__ . '/src/wp-includes/SimplePie',
         __DIR__ . '/src/wp-includes/sodium_compat',
         __DIR__ . '/src/wp-includes/Text',
+        // Files specified in rebrand-ignore.txt
+        __DIR__ . '/Gruntfile.js',
+        __DIR__ . '/package-lock.json',
         // Add other third-party libraries to skip
     ]);
 

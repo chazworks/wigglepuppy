@@ -46,8 +46,86 @@ $replacementPatterns = [
     '/\bWORDPRESS\b/' => 'WIGGLEPUPPY'
 ];
 
+// Function to parse an ignore file and get patterns to exclude
+function parseIgnoreFile($filePath) {
+    if (!file_exists($filePath)) {
+        return [];
+    }
+
+    $patterns = [];
+    $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+    foreach ($lines as $line) {
+        // Skip comments and empty lines
+        if (empty($line) || $line[0] === '#') {
+            continue;
+        }
+
+        // Handle negated patterns (those starting with !)
+        $isNegated = false;
+        if ($line[0] === '!') {
+            $isNegated = true;
+            $line = substr($line, 1);
+        }
+
+        // Convert pattern to regex pattern
+        $pattern = preg_quote($line, '/');
+        $pattern = str_replace('\*', '.*', $pattern);
+
+        // Handle directory patterns (those ending with /)
+        if (substr($pattern, -1) === '/') {
+            $pattern = $pattern . '.*';
+        }
+
+        // Add pattern to list
+        $patterns[] = [
+            'pattern' => '/^' . $pattern . '/',
+            'negated' => $isNegated
+        ];
+    }
+
+    return $patterns;
+}
+
+// Function to parse .gitignore file and get patterns to exclude
+function parseGitignore($rootDir) {
+    $gitignorePath = $rootDir . '/.gitignore';
+    return parseIgnoreFile($gitignorePath);
+}
+
+// Function to parse rebrand-ignore.txt file and get patterns to exclude
+function parseRebrandIgnore($rootDir) {
+    $rebrandIgnorePath = $rootDir . '/tools/rebranding/rebrand-ignore.txt';
+    return parseIgnoreFile($rebrandIgnorePath);
+}
+
+// Function to check if a file should be excluded based on .gitignore and rebrand-ignore.txt patterns
+function shouldExcludeFile($filePath, $gitignorePatterns, $rebrandIgnorePatterns, $rootDir) {
+    // Get relative path from root directory
+    $relativePath = str_replace($rootDir . '/', '', $filePath);
+
+    // Check if file matches any .gitignore pattern
+    $excluded = false;
+    foreach ($gitignorePatterns as $pattern) {
+        if (preg_match($pattern['pattern'], $relativePath)) {
+            $excluded = $pattern['negated'] ? false : true;
+        }
+    }
+
+    // If not excluded by gitignore, check rebrand-ignore.txt patterns
+    if (!$excluded) {
+        foreach ($rebrandIgnorePatterns as $pattern) {
+            if (preg_match($pattern['pattern'], $relativePath)) {
+                $excluded = $pattern['negated'] ? false : true;
+            }
+        }
+    }
+
+    return $excluded;
+}
+
 // Function to scan directory using a non-recursive approach
-function scanDirectory($dir, $extensions) {
+function scanDirectory($dir, $extensions, $gitignorePatterns, $rebrandIgnorePatterns, $rootDir) {
     $results = [];
     $stack = [$dir];
 
@@ -61,6 +139,11 @@ function scanDirectory($dir, $extensions) {
             }
 
             $path = $currentDir . '/' . $file;
+
+            // Skip files/directories that match .gitignore or rebrand-ignore.txt patterns
+            if (shouldExcludeFile($path, $gitignorePatterns, $rebrandIgnorePatterns, $rootDir)) {
+                continue;
+            }
 
             if (is_dir($path)) {
                 // Add directory to stack for later processing
@@ -176,9 +259,17 @@ function writeLog($log, $logFile) {
 // Main execution
 echo "Starting WordPress to WigglePuppy rebranding replacement...\n";
 
+// Parse .gitignore file
+echo "Parsing .gitignore file...\n";
+$gitignorePatterns = parseGitignore($rootDir);
+
+// Parse rebrand-ignore.txt file
+echo "Parsing rebrand-ignore.txt file...\n";
+$rebrandIgnorePatterns = parseRebrandIgnore($rootDir);
+
 // Scan all files with specified extensions
 echo "Scanning files...\n";
-$files = scanDirectory($rootDir, $extensions);
+$files = scanDirectory($rootDir, $extensions, $gitignorePatterns, $rebrandIgnorePatterns, $rootDir);
 echo "Found " . count($files) . " files with specified extensions.\n";
 
 // Initialize log

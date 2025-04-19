@@ -92,15 +92,14 @@ $replacementPatterns = [
     '/\bWORDPRESS\b/' => 'WIGGLEPUPPY'
 ];
 
-// Function to parse .gitignore file and get patterns to exclude
-function parseGitignore($rootDir) {
-    $gitignorePath = $rootDir . '/.gitignore';
-    if (!file_exists($gitignorePath)) {
+// Function to parse an ignore file and get patterns to exclude
+function parseIgnoreFile($filePath) {
+    if (!file_exists($filePath)) {
         return [];
     }
 
     $patterns = [];
-    $lines = file($gitignorePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $lines = file($filePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
     foreach ($lines as $line) {
         // Skip comments and empty lines
@@ -115,7 +114,7 @@ function parseGitignore($rootDir) {
             $line = substr($line, 1);
         }
 
-        // Convert .gitignore pattern to regex pattern
+        // Convert pattern to regex pattern
         $pattern = preg_quote($line, '/');
         $pattern = str_replace('\*', '.*', $pattern);
 
@@ -134,8 +133,20 @@ function parseGitignore($rootDir) {
     return $patterns;
 }
 
-// Function to check if a file should be excluded based on .gitignore patterns
-function shouldExcludeFile($filePath, $gitignorePatterns, $rootDir) {
+// Function to parse .gitignore file and get patterns to exclude
+function parseGitignore($rootDir) {
+    $gitignorePath = $rootDir . '/.gitignore';
+    return parseIgnoreFile($gitignorePath);
+}
+
+// Function to parse rebrand-ignore.txt file and get patterns to exclude
+function parseRebrandIgnore($rootDir) {
+    $rebrandIgnorePath = $rootDir . '/tools/rebranding/rebrand-ignore.txt';
+    return parseIgnoreFile($rebrandIgnorePath);
+}
+
+// Function to check if a file should be excluded based on .gitignore and rebrand-ignore.txt patterns
+function shouldExcludeFile($filePath, $gitignorePatterns, $rebrandIgnorePatterns, $rootDir) {
     // Get relative path from root directory
     $relativePath = str_replace($rootDir . '/', '', $filePath);
 
@@ -144,6 +155,15 @@ function shouldExcludeFile($filePath, $gitignorePatterns, $rootDir) {
     foreach ($gitignorePatterns as $pattern) {
         if (preg_match($pattern['pattern'], $relativePath)) {
             $excluded = $pattern['negated'] ? false : true;
+        }
+    }
+
+    // If not excluded by gitignore, check rebrand-ignore.txt patterns
+    if (!$excluded) {
+        foreach ($rebrandIgnorePatterns as $pattern) {
+            if (preg_match($pattern['pattern'], $relativePath)) {
+                $excluded = $pattern['negated'] ? false : true;
+            }
         }
     }
 
@@ -172,7 +192,7 @@ function isMinifiedFile($filePath) {
 }
 
 // Function to scan directory recursively
-function scanDirectory($dir, $extensions, $gitignorePatterns, $rootDir) {
+function scanDirectory($dir, $extensions, $gitignorePatterns, $rebrandIgnorePatterns, $rootDir) {
     $results = [];
     $stack = [$dir];
 
@@ -187,8 +207,8 @@ function scanDirectory($dir, $extensions, $gitignorePatterns, $rootDir) {
 
             $path = $currentDir . '/' . $file;
 
-            // Skip files/directories that match .gitignore patterns
-            if (shouldExcludeFile($path, $gitignorePatterns, $rootDir)) {
+            // Skip files/directories that match .gitignore or rebrand-ignore.txt patterns
+            if (shouldExcludeFile($path, $gitignorePatterns, $rebrandIgnorePatterns, $rootDir)) {
                 continue;
             }
 
@@ -415,9 +435,13 @@ echo "Starting WordPress to WigglePuppy batch rebranding...\n";
 echo "Parsing .gitignore file...\n";
 $gitignorePatterns = parseGitignore($rootDir);
 
+// Parse rebrand-ignore.txt file
+echo "Parsing rebrand-ignore.txt file...\n";
+$rebrandIgnorePatterns = parseRebrandIgnore($rootDir);
+
 // Scan all files with specified extensions
 echo "Scanning files...\n";
-$files = scanDirectory($rootDir, $extensions, $gitignorePatterns, $rootDir);
+$files = scanDirectory($rootDir, $extensions, $gitignorePatterns, $rebrandIgnorePatterns, $rootDir);
 echo "Found " . count($files) . " files to process.\n";
 
 // Initialize log and manifest

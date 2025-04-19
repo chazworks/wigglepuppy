@@ -42,9 +42,9 @@ The following caveats must be strictly observed during the rebranding process:
 
 7. **Whitespace Preservation**: The type and amount of whitespace on a line must not be changed. This includes spaces, tabs, and line endings.
 
-8. **Files Covered by .gitignore**: Files and directories specified in the .gitignore file should not be processed. These include:
+8. **Files Covered by .gitignore and rebrand-ignore.txt**: Files and directories specified in the .gitignore file or the tools/rebranding/rebrand-ignore.txt file should not be processed. These include:
    - Configuration files with sensitive information
-   - Build and test tool files
+   - Build and test tool files (including Gruntfile.js and package-lock.json)
    - Generated files and directories
    - Content files in wp-content
    - Local environment configuration files
