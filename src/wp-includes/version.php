@@ -1,4 +1,5 @@
 <?php
+
 /**
  * WordPress Version
  *
@@ -44,10 +45,10 @@ $required_php_version = '7.2.24';
  *
  * @global string[] $required_php_extensions
  */
-$required_php_extensions = array(
-	'json',
-	'hash',
-);
+$required_php_extensions = [
+    'json',
+    'hash',
+];
 
 /**
  * Holds the required MySQL version.

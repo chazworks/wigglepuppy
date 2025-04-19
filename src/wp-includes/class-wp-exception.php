@@ -1,4 +1,5 @@
 <?php
+
 /**
  * WP_Exception class
  *

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Theme file editor network administration panel.
  *

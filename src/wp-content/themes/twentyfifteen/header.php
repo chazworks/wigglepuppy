@@ -11,10 +11,10 @@
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?> class="no-js">
 <head>
-	<meta charset="<?php bloginfo( 'charset' ); ?>">
+	<meta charset="<?php bloginfo('charset'); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="profile" href="https://gmpg.org/xfn/11">
-	<link rel="pingback" href="<?php echo esc_url( get_bloginfo( 'pingback_url' ) ); ?>">
+	<link rel="pingback" href="<?php echo esc_url(get_bloginfo('pingback_url')); ?>">
 	<?php wp_head(); ?>
 </head>
 
@@ -23,33 +23,33 @@
 <div id="page" class="hfeed site">
 	<a class="skip-link screen-reader-text" href="#content">
 		<?php
-		/* translators: Hidden accessibility text. */
-		_e( 'Skip to content', 'twentyfifteen' );
-		?>
+        /* translators: Hidden accessibility text. */
+        _e('Skip to content', 'twentyfifteen');
+?>
 	</a>
 
 	<div id="sidebar" class="sidebar">
 		<header id="masthead" class="site-header">
 			<div class="site-branding">
 				<?php
-					twentyfifteen_the_custom_logo();
-					$is_front = ! is_paged() && ( is_front_page() || ( is_home() && ( (int) get_option( 'page_for_posts' ) !== get_queried_object_id() ) ) );
-				if ( is_front_page() && is_home() ) :
-					?>
-						<h1 class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" <?php echo $is_front ? 'aria-current="page"' : ''; ?>><?php bloginfo( 'name' ); ?></a></h1>
+            twentyfifteen_the_custom_logo();
+$is_front = ! is_paged() && (is_front_page() || (is_home() && ((int) get_option('page_for_posts') !== get_queried_object_id())));
+if (is_front_page() && is_home()) :
+    ?>
+						<h1 class="site-title"><a href="<?php echo esc_url(home_url('/')); ?>" rel="home" <?php echo $is_front ? 'aria-current="page"' : ''; ?>><?php bloginfo('name'); ?></a></h1>
 					<?php else : ?>
-						<p class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" <?php echo $is_front ? 'aria-current="page"' : ''; ?>><?php bloginfo( 'name' ); ?></a></p>
+						<p class="site-title"><a href="<?php echo esc_url(home_url('/')); ?>" rel="home" <?php echo $is_front ? 'aria-current="page"' : ''; ?>><?php bloginfo('name'); ?></a></p>
 						<?php
 					endif;
 
-					$description = get_bloginfo( 'description', 'display' );
-					if ( $description || is_customize_preview() ) :
-						?>
+$description = get_bloginfo('description', 'display');
+if ($description || is_customize_preview()) :
+    ?>
 						<p class="site-description"><?php echo $description; ?></p>
 						<?php
-					endif;
-					?>
-				<button class="secondary-toggle"><?php _e( 'Menu and widgets', 'twentyfifteen' ); ?></button>
+endif;
+?>
+				<button class="secondary-toggle"><?php _e('Menu and widgets', 'twentyfifteen'); ?></button>
 			</div><!-- .site-branding -->
 		</header><!-- .site-header -->
 

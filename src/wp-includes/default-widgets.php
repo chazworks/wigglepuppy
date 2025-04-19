@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Widget API: Default core widgets
  *
@@ -8,8 +9,8 @@
  */
 
 // Don't load directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	die( '-1' );
+if (! defined('ABSPATH')) {
+    die('-1');
 }
 
 /** WP_Widget_Pages class */

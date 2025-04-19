@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Show the excerpt.
  *

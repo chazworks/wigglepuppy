@@ -1,4 +1,5 @@
 <?php
+
 /*
 Plugin Name: Dummy Plugin 2
 Plugin URI: https://wordpress.org/
@@ -7,6 +8,7 @@ Version: 1.0.0
 Text Domain: internationalized-plugin
 */
 
-function i18n_plugin_2_test() {
-	return __( 'This is a dummy plugin', 'internationalized-plugin-2' );
+function i18n_plugin_2_test()
+{
+    return __('This is a dummy plugin', 'internationalized-plugin-2');
 }

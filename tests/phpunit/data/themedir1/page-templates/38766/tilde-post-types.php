@@ -1,4 +1,5 @@
 <?php
+
 /*
    Template Name: Tilde in Post Type.
    Template Post Type: period, full~stop

@@ -1,16 +1,17 @@
 <phpunit
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/9.2/phpunit.xsd"
-		bootstrap="tests/phpunit/includes/bootstrap.php"
-		backupGlobals="false"
-		colors="true"
-		beStrictAboutTestsThatDoNotTestAnything="true"
-		beStrictAboutOutputDuringTests="true"
-		convertErrorsToExceptions="true"
-		convertWarningsToExceptions="true"
-		convertNoticesToExceptions="true"
-		convertDeprecationsToExceptions="true"
-		>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/9.2/phpunit.xsd"
+	bootstrap="tests/phpunit/includes/bootstrap.php"
+	backupGlobals="false"
+	colors="true"
+	beStrictAboutTestsThatDoNotTestAnything="true"
+	beStrictAboutOutputDuringTests="true"
+	convertErrorsToExceptions="true"
+	convertWarningsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertDeprecationsToExceptions="true"
+	cacheResultFile=".cache/.phpunit.result.cache"
+	>
 	<testsuites>
 		<!-- Default test suite to run all tests. -->
 		<testsuite name="default">

@@ -23,7 +23,7 @@ When opening your codespace, be sure to wait for the `postCreateCommand` to fini
 
 ### Local development
 
-WordPress is a PHP, MySQL, and JavaScript based project, and uses Node for its JavaScript dependencies. A local development environment is available to quickly get up and running.
+WordPress is a PHP, MariaDB, and JavaScript based project, and uses Node for its JavaScript dependencies. A local development environment is available to quickly get up and running.
 
 You will need a basic understanding of how to use the command line on your computer. This will allow you to set up the local development environment, to start it and stop it when necessary, and to run the tests.
 
@@ -50,8 +50,8 @@ Clone the current repository using `git clone https://github.com/WordPress/wordp
 ```
 npm install
 npm run build:dev
-npm run env:start
-npm run env:install
+./bin/start.sh
+./bin/install.sh
 ```
 
 Your WordPress site will be accessible at http://localhost:8889. You can see or change configurations in the `.env` file located at the root of the project directory.
@@ -69,13 +69,13 @@ To stop the watcher, press `ctrl+c`.
 #### To run a [WP-CLI](https://make.wordpress.org/cli/handbook/) command
 
 ```
-npm run env:cli -- <command>
+./bin/cli.sh <command>
 ```
 
-WP-CLI has [many useful commands](https://developer.wordpress.org/cli/commands/) you can use to work on your WordPress site. Where the documentation mentions running `wp`, run `npm run env:cli --` instead. For example:
+WP-CLI has [many useful commands](https://developer.wordpress.org/cli/commands/) you can use to work on your WordPress site. Where the documentation mentions running `wp`, run `./bin/cli.sh` instead. For example:
 
 ```
-npm run env:cli -- help
+./bin/cli.sh help
 ```
 
 #### To run the tests
@@ -83,15 +83,15 @@ npm run env:cli -- help
 These commands run the PHP and end-to-end test suites, respectively:
 
 ```
-npm run test:php
+./bin/test-php.sh
 npm run test:e2e
 ```
 
-You can pass extra parameters into the PHP tests by adding `--` and then the [command-line options](https://docs.phpunit.de/en/10.4/textui.html#command-line-options):
+You can pass extra parameters into the PHP tests by adding the [command-line options](https://docs.phpunit.de/en/10.4/textui.html#command-line-options) directly:
 
 ```
-npm run test:php -- --filter <test name>
-npm run test:php -- --group <group name or ticket number>
+./bin/test-php.sh --filter <test name>
+./bin/test-php.sh --group <group name or ticket number>
 ```
 
 #### Generating a code coverage report
@@ -100,7 +100,7 @@ PHP code coverage reports are [generated daily](https://github.com/WordPress/wor
 After the local Docker environment has [been installed and started](#to-start-the-development-environment-for-the-first-time), the following command can be used to generate a code coverage report. 
 
 ```
-npm run test:coverage
+./bin/test-php.sh --coverage-html ./coverage/html/ --coverage-php ./coverage/php/report.php --coverage-text=./coverage/text/report.txt
 ```
 
 The command will generate three coverage reports in HTML, PHP, and text formats, saving them in the `coverage` folder.
@@ -112,7 +112,7 @@ The command will generate three coverage reports in HTML, PHP, and text formats,
 You may want to restart the environment if you've made changes to the configuration in the `docker-compose.yml` or `.env` files. Restart the environment with:
 
 ```
-npm run env:restart
+./bin/restart.sh
 ```
 
 #### To stop the development environment
@@ -120,7 +120,7 @@ npm run env:restart
 You can stop the environment when you're not using it to preserve your computer's power and resources:
 
 ```
-npm run env:stop
+./bin/stop.sh
 ```
 
 #### To start the development environment again
@@ -128,7 +128,7 @@ npm run env:stop
 Starting the environment again is a single command:
 
 ```
-npm run env:start
+./bin/start.sh
 ```
 
 #### Resetting the development environment
@@ -136,26 +136,9 @@ npm run env:start
 The development environment can be reset. This will destroy the database and attempt to remove the pulled Docker images.
 
 ```
-npm run env:reset
+./bin/reset.sh
 ```
 
-### Apple Silicon machines and old MySQL/MariaDB versions
-
-Older MySQL and MariaDB Docker images do not support Apple Silicon processors (M1, M2, etc.). This is true for:
-
-- MySQL versions 5.7 and earlier
-- MariaDB 5.5
-
-When using these versions on an Apple Silicon machine, you must create a `docker-compose.override.yml` file with the following contents:
-
-```
-services:
-
-  mysql:
-    platform: linux/amd64
-```
-
-Additionally, the "Use Rosetta for x86/AMD64 emulation on Apple Silicon" setting in Docker needs to be disabled for this workaround.
 
 ## Credentials
 

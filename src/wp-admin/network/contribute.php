@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Network Contribute administration panel.
  *

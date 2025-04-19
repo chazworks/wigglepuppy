@@ -19,14 +19,14 @@
 <html <?php language_attributes(); ?>>
 <!--<![endif]-->
 <head>
-<meta charset="<?php bloginfo( 'charset' ); ?>" />
+<meta charset="<?php bloginfo('charset'); ?>" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title><?php wp_title( '|', true, 'right' ); ?></title>
+<title><?php wp_title('|', true, 'right'); ?></title>
 <link rel="profile" href="https://gmpg.org/xfn/11" />
-<link rel="pingback" href="<?php echo esc_url( get_bloginfo( 'pingback_url' ) ); ?>">
-<?php // Loads HTML5 JavaScript file to add support for HTML5 elements in older IE versions. ?>
+<link rel="pingback" href="<?php echo esc_url(get_bloginfo('pingback_url')); ?>">
+<?php // Loads HTML5 JavaScript file to add support for HTML5 elements in older IE versions.?>
 <!--[if lt IE 9]>
-<script src="<?php echo esc_url( get_template_directory_uri() ); ?>/js/html5.js?ver=3.7.0" type="text/javascript"></script>
+<script src="<?php echo esc_url(get_template_directory_uri()); ?>/js/html5.js?ver=3.7.0" type="text/javascript"></script>
 <![endif]-->
 <?php wp_head(); ?>
 </head>
@@ -34,28 +34,28 @@
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 <div id="page" class="hfeed site">
-	<a class="screen-reader-text skip-link" href="#content"><?php _e( 'Skip to content', 'twentytwelve' ); ?></a>
+	<a class="screen-reader-text skip-link" href="#content"><?php _e('Skip to content', 'twentytwelve'); ?></a>
 	<header id="masthead" class="site-header">
 		<hgroup>
-		<?php $is_front = ! is_paged() && ( is_front_page() || ( is_home() && ( (int) get_option( 'page_for_posts' ) !== get_queried_object_id() ) ) ); ?>
-			<h1 class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" <?php echo $is_front ? 'aria-current="page"' : ''; ?>><?php bloginfo( 'name' ); ?></a></h1>
-			<h2 class="site-description"><?php bloginfo( 'description' ); ?></h2>
+		<?php $is_front = ! is_paged() && (is_front_page() || (is_home() && ((int) get_option('page_for_posts') !== get_queried_object_id()))); ?>
+			<h1 class="site-title"><a href="<?php echo esc_url(home_url('/')); ?>" rel="home" <?php echo $is_front ? 'aria-current="page"' : ''; ?>><?php bloginfo('name'); ?></a></h1>
+			<h2 class="site-description"><?php bloginfo('description'); ?></h2>
 		</hgroup>
 
 		<nav id="site-navigation" class="main-navigation">
-			<button class="menu-toggle"><?php _e( 'Menu', 'twentytwelve' ); ?></button>
+			<button class="menu-toggle"><?php _e('Menu', 'twentytwelve'); ?></button>
 			<?php
-			wp_nav_menu(
-				array(
-					'theme_location' => 'primary',
-					'menu_class'     => 'nav-menu',
-				)
-			);
-			?>
+            wp_nav_menu(
+                [
+                    'theme_location' => 'primary',
+                    'menu_class'     => 'nav-menu',
+                ],
+            );
+?>
 		</nav><!-- #site-navigation -->
 
-		<?php if ( get_header_image() ) : ?>
-		<a href="<?php echo esc_url( home_url( '/' ) ); ?>" <?php echo $is_front ? 'aria-current="page"' : ''; ?> rel="home"><?php twentytwelve_header_image(); ?></a>
+		<?php if (get_header_image()) : ?>
+		<a href="<?php echo esc_url(home_url('/')); ?>" <?php echo $is_front ? 'aria-current="page"' : ''; ?> rel="home"><?php twentytwelve_header_image(); ?></a>
 		<?php endif; ?>
 	</header><!-- #masthead -->
 

@@ -2,15 +2,15 @@ The short version:
 
 1. Create a clean MySQL database and user. DO NOT USE AN EXISTING DATABASE or you will lose data, guaranteed.
 
-2. Copy wp-tests-config-sample.php to wp-tests-config.php, edit it and include your database name/user/password.
+2. $ svn up
 
-3. $ svn up
-
-4. Run the tests from the "trunk" directory:
+3. Run the tests from the "trunk" directory:
    To execute a particular test:
-      $ phpunit tests/phpunit/tests/test_case.php
+      $ ./bin/test-php.sh tests/phpunit/tests/test_case.php
    To execute all tests:
-      $ phpunit
+      $ ./bin/test-php.sh
+
+Note: The test-php.sh script will automatically create wp-tests-config.php if it doesn't exist, using 'wptest' as the default database name (or the value of LOCAL_TEST_DB_NAME environment variable if set).
 
 Notes:
 
