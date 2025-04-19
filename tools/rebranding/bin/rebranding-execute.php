@@ -40,14 +40,7 @@ echo "\n=== Running Rector for PHP files ===\n";
 $rectorCommand = "vendor/bin/rector process --dry-run";
 $rectorOutput = executeCommand($rectorCommand);
 echo "Rector dry run completed. Review the output above for any issues.\n";
-
-echo "Do you want to proceed with the actual Rector run? (y/n): ";
-$handle = fopen("php://stdin", "r");
-$line = trim(fgets($handle));
-if (strtolower($line) !== 'y') {
-    echo "Aborting Rector run.\n";
-    exit(0);
-}
+echo "Proceeding with the actual Rector run...\n";
 
 $rectorCommand = "vendor/bin/rector process";
 $rectorOutput = executeCommand($rectorCommand);

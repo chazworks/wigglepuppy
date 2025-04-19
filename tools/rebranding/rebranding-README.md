@@ -62,7 +62,7 @@ php tools/rebranding/bin/rebranding-execute.php
 
 **Process:**
 1. Runs Rector in dry-run mode first for review
-2. Prompts for confirmation before making actual changes
+2. Automatically proceeds with the actual Rector run
 3. Runs Rector to process PHP files
 4. Runs regex replacements for non-PHP files
 5. Creates a completion report
