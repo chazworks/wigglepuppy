@@ -25,36 +25,67 @@ $reset = "\033[0m";
 
 echo "Running WordPress to WigglePuppy rebranding tests...\n\n";
 
+// Function to create a temporary directory
+function createTempDir() {
+    $tempDir = sys_get_temp_dir() . '/wp-rebranding-tests-' . uniqid('', true);
+    if (!mkdir($tempDir, 0777, true) && !is_dir($tempDir)) {
+        throw new \RuntimeException(sprintf('Directory "%s" was not created', $tempDir));
+    }
+    return $tempDir;
+}
+
+// Function to copy test files to temporary directory
+function copyTestFiles($sourceDir, $tempDir) {
+    $files = ['regex-test.txt', 'string-rector-test.php', 'comment-rector-test.php'];
+    foreach ($files as $file) {
+        copy($sourceDir . '/' . $file, $tempDir . '/' . $file);
+    }
+}
+
 // Function to run tests
 function runTests() {
     global $testsDir, $toolsDir, $projectDir, $green, $red, $yellow, $reset;
     $errors = 0;
     $warnings = 0;
 
+    // Create temporary directory for tests
+    $tempDir = createTempDir();
+    echo "Created temporary directory for tests: $tempDir\n\n";
+
+    // Copy test files to temporary directory
+    copyTestFiles($testsDir, $tempDir);
+    echo "Copied test files to temporary directory\n\n";
+
     // Test 1: Regex replacements on non-PHP files
     echo "Test 1: Regex replacements on non-PHP files\n";
     echo "----------------------------------------\n";
 
-    // Create a temporary copy of the test file
-    $regexTestFile = $testsDir . '/regex-test.txt';
-    $regexTestFileCopy = $testsDir . '/regex-test-copy.txt';
-    copy($regexTestFile, $regexTestFileCopy);
+    // Use the temporary file for testing
+    $regexTestFile = $tempDir . '/regex-test.txt';
 
     // Apply regex replacements
-    $content = file_get_contents($regexTestFileCopy);
+    $content = file_get_contents($regexTestFile);
+    $lines = explode("\n", $content);
+    $newLines = [];
 
-    // Skip if the line contains patterns we shouldn't replace
-    if (!preg_match('/\$.*wordpress|function.*wordpress|wordpress\.org|wordpress\.com|copyright.*wordpress|.*\.wordpress\.|.*wordpress.*wigglepuppy.*|.*wigglepuppy.*wordpress.*/i', $content)) {
-        // Replace WordPress with WigglePuppy preserving case
-        $content = preg_replace('/\bWordPress\b/', 'WigglePuppy', $content);
-        $content = preg_replace('/\bwordpress\b/', 'wigglepuppy', $content);
-        $content = preg_replace('/\bWORDPRESS\b/', 'WIGGLEPUPPY', $content);
+    foreach ($lines as $line) {
+        // Skip if the line contains patterns we shouldn't replace
+        if (preg_match('/\$.*wordpress|function.*wordpress|wordpress\.org|wordpress\.com|copyright.*wordpress|.*\.wordpress\.|.*wordpress\.php|.*wordpress.*wigglepuppy.*|.*wigglepuppy.*wordpress.*/i', $line)) {
+            $newLines[] = $line;
+        } else {
+            // Replace WordPress with WigglePuppy preserving case
+            $line = preg_replace('/\bWordPress\b/', 'WigglePuppy', $line);
+            $line = preg_replace('/\bwordpress\b/', 'wigglepuppy', $line);
+            $line = preg_replace('/\bWORDPRESS\b/', 'WIGGLEPUPPY', $line);
+            $newLines[] = $line;
+        }
     }
 
-    file_put_contents($regexTestFileCopy, $content);
+    $content = implode("\n", $newLines);
+    file_put_contents($regexTestFile, $content);
 
     // Verify the replacements
-    $content = file_get_contents($regexTestFileCopy);
+    $content = file_get_contents($regexTestFile);
 
     // Check that the first three lines were replaced
     if (strpos($content, 'This is a WigglePuppy test file.') !== false) {
@@ -121,26 +152,110 @@ function runTests() {
         $errors++;
     }
 
-    // Clean up
-    unlink($regexTestFileCopy);
-
     echo "\n";
 
     // Test 2: WordPressToWigglePuppyStringRector
     echo "Test 2: WordPressToWigglePuppyStringRector\n";
     echo "----------------------------------------\n";
-    echo "{$yellow}Note: This test requires running Rector on the test file.{$reset}\n";
-    echo "{$yellow}To run this test, execute the following command:{$reset}\n";
-    echo "vendor/bin/rector process tools/rebranding/tests/string-rector-test.php --config=rector.php\n\n";
-    $warnings++;
+
+    // Create a temporary rector config file for testing
+    $tempRectorConfig = $tempDir . '/rector.php';
+    $rectorConfigContent = <<<'EOD'
+<?php
+declare(strict_types=1);
+
+use Rector\Config\RectorConfig;
+use WigglePuppy\Rector\Rebranding\WordPressToWigglePuppyStringRector;
+use WigglePuppy\Rector\Rebranding\WordPressToWigglePuppyCommentRector;
+
+return function (RectorConfig $rectorConfig): void {
+    // Register autoloader for custom rules
+    $rectorConfig->autoloadPaths([
+        __DIR__ . '/../tools/rebranding/rector/src'
+    ]);
+
+    // Apply rules
+    $rectorConfig->rules([
+        WordPressToWigglePuppyStringRector::class,
+    ]);
+};
+EOD;
+    file_put_contents($tempRectorConfig, $rectorConfigContent);
+
+    // Run Rector on the string test file
+    $stringTestFile = $tempDir . '/string-rector-test.php';
+    $originalContent = file_get_contents($stringTestFile);
+
+    // Execute Rector using shell_exec
+    $command = "cd $projectDir && vendor/bin/rector process $stringTestFile --config=$tempRectorConfig --dry-run";
+    $output = shell_exec($command);
+
+    echo "Rector output for string test:\n";
+    echo $output . "\n";
+
+    // Check if the expected changes would be made
+    if (strpos($output, 'This is a WigglePuppy string') !== false) {
+        echo "{$green}✓ 'WordPress' would be correctly replaced with 'WigglePuppy' in strings{$reset}\n";
+    } else {
+        echo "{$red}✗ 'WordPress' would not be replaced with 'WigglePuppy' in strings{$reset}\n";
+        $errors++;
+    }
+
+    echo "\n";
 
     // Test 3: WordPressToWigglePuppyCommentRector
     echo "Test 3: WordPressToWigglePuppyCommentRector\n";
     echo "----------------------------------------\n";
-    echo "{$yellow}Note: This test requires running Rector on the test file.{$reset}\n";
-    echo "{$yellow}To run this test, execute the following command:{$reset}\n";
-    echo "vendor/bin/rector process tools/rebranding/tests/comment-rector-test.php --config=rector.php\n\n";
-    $warnings++;
+
+    // Create a temporary rector config file for testing comments
+    $tempRectorConfigComments = $tempDir . '/rector-comments.php';
+    $rectorConfigCommentsContent = <<<'EOD'
+<?php
+declare(strict_types=1);
+
+use Rector\Config\RectorConfig;
+use WigglePuppy\Rector\Rebranding\WordPressToWigglePuppyStringRector;
+use WigglePuppy\Rector\Rebranding\WordPressToWigglePuppyCommentRector;
+
+return function (RectorConfig $rectorConfig): void {
+    // Register autoloader for custom rules
+    $rectorConfig->autoloadPaths([
+        __DIR__ . '/../tools/rebranding/rector/src'
+    ]);
+
+    // Apply rules
+    $rectorConfig->rules([
+        WordPressToWigglePuppyCommentRector::class,
+    ]);
+};
+EOD;
+    file_put_contents($tempRectorConfigComments, $rectorConfigCommentsContent);
+
+    // Run Rector on the comment test file
+    $commentTestFile = $tempDir . '/comment-rector-test.php';
+    $originalCommentContent = file_get_contents($commentTestFile);
+
+    // Execute Rector using shell_exec
+    $command = "cd $projectDir && vendor/bin/rector process $commentTestFile --config=$tempRectorConfigComments --dry-run";
+    $output = shell_exec($command);
+
+    echo "Rector output for comment test:\n";
+    echo $output . "\n";
+
+    // Check if the expected changes would be made
+    if (strpos($output, 'This is a WigglePuppy comment') !== false) {
+        echo "{$green}✓ 'WordPress' would be correctly replaced with 'WigglePuppy' in comments{$reset}\n";
+    } else {
+        echo "{$red}✗ 'WordPress' would not be replaced with 'WigglePuppy' in comments{$reset}\n";
+        $errors++;
+    }
+
+    echo "\n";
+
+    // Clean up temporary directory
+    array_map('unlink', glob("$tempDir/*"));
+    rmdir($tempDir);
+    echo "Cleaned up temporary directory\n\n";
 
     // Summary
     echo "Test Summary\n";
@@ -149,10 +264,6 @@ function runTests() {
         echo "{$green}All tests passed!{$reset}\n";
     } else {
         echo "{$red}$errors error(s) found.{$reset}\n";
-    }
-
-    if ($warnings > 0) {
-        echo "{$yellow}$warnings warning(s) found. Some tests require manual execution.{$reset}\n";
     }
 
     return $errors === 0;
