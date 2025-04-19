@@ -7,6 +7,9 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\CodeQuality\Rector\If_\SimplifyIfReturnBoolRector;
+use WigglePuppy\Rector\Rebranding\WordPressToWigglePuppyStringRector;
+use WigglePuppy\Rector\Rebranding\WordPressToWigglePuppyCommentRector;
+use WigglePuppy\Rector\Rebranding\WordPressToWigglePuppyConstantRector;
 
 return function (RectorConfig $rectorConfig): void {
     // Define paths to refactor
@@ -26,9 +29,19 @@ return function (RectorConfig $rectorConfig): void {
         // Add other third-party libraries to skip
     ]);
 
-    // Apply only low risk rules
+    // Register autoloader for custom rules
+    $rectorConfig->autoloadPaths([
+        __DIR__ . '/tools/rector/src'
+    ]);
+
+    // Apply rules
     $rectorConfig->rules([
         // Code Quality Improvements
         SimplifyIfReturnBoolRector::class,
+
+        // WordPress to WigglePuppy Rebranding Rules
+        WordPressToWigglePuppyStringRector::class,
+        WordPressToWigglePuppyCommentRector::class,
+        WordPressToWigglePuppyConstantRector::class,
     ]);
 };
