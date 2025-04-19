@@ -7,7 +7,6 @@ The following custom Rector rules should be developed for the rebranding process
 
 1. **WordPressToWigglePuppyStringRector**: Replaces 'WordPress' with 'WigglePuppy' in string literals, preserving case.
 2. **WordPressToWigglePuppyCommentRector**: Replaces 'WordPress' with 'WigglePuppy' in comments, preserving case.
-3. **WordPressToWigglePuppyConstantRector**: Replaces 'WORDPRESS' with 'WIGGLEPUPPY' in constant names and values.
 
 ## Implementation Example
 
@@ -66,7 +65,6 @@ final class WordPressToWigglePuppyStringRector extends AbstractRector
 use Rector\Config\RectorConfig;
 use WigglePuppy\Rector\Rebranding\WordPressToWigglePuppyStringRector;
 use WigglePuppy\Rector\Rebranding\WordPressToWigglePuppyCommentRector;
-use WigglePuppy\Rector\Rebranding\WordPressToWigglePuppyConstantRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->paths([
@@ -75,6 +73,5 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->rule(WordPressToWigglePuppyStringRector::class);
     $rectorConfig->rule(WordPressToWigglePuppyCommentRector::class);
-    $rectorConfig->rule(WordPressToWigglePuppyConstantRector::class);
 };
 ```

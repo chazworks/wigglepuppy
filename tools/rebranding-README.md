@@ -31,7 +31,6 @@ Contains custom Rector rules for replacing "WordPress" with "WigglePuppy" in PHP
 
 - `WordPressToWigglePuppyStringRector.php`: Replaces "WordPress" with "WigglePuppy" in string literals
 - `WordPressToWigglePuppyCommentRector.php`: Replaces "WordPress" with "WigglePuppy" in comments
-- `WordPressToWigglePuppyConstantRector.php`: Replaces "WORDPRESS" with "WIGGLEPUPPY" in constants
 
 These rules are configured in the root `rector.php` file.
 

@@ -290,8 +290,7 @@ function writeResultsToFiles($results, $outputDir) {
     $rectorContent .= "## Custom Rector Rules\n\n";
     $rectorContent .= "The following custom Rector rules should be developed for the rebranding process:\n\n";
     $rectorContent .= "1. **WordPressToWigglePuppyStringRector**: Replaces 'WordPress' with 'WigglePuppy' in string literals, preserving case.\n";
-    $rectorContent .= "2. **WordPressToWigglePuppyCommentRector**: Replaces 'WordPress' with 'WigglePuppy' in comments, preserving case.\n";
-    $rectorContent .= "3. **WordPressToWigglePuppyConstantRector**: Replaces 'WORDPRESS' with 'WIGGLEPUPPY' in constant names and values.\n\n";
+    $rectorContent .= "2. **WordPressToWigglePuppyCommentRector**: Replaces 'WordPress' with 'WigglePuppy' in comments, preserving case.\n\n";
 
     $rectorContent .= "## Implementation Example\n\n";
     $rectorContent .= "```php\n";
@@ -338,15 +337,13 @@ function writeResultsToFiles($results, $outputDir) {
     $rectorContent .= "// rector.php\n";
     $rectorContent .= "use Rector\\Config\\RectorConfig;\n";
     $rectorContent .= "use WigglePuppy\\Rector\\Rebranding\\WordPressToWigglePuppyStringRector;\n";
-    $rectorContent .= "use WigglePuppy\\Rector\\Rebranding\\WordPressToWigglePuppyCommentRector;\n";
-    $rectorContent .= "use WigglePuppy\\Rector\\Rebranding\\WordPressToWigglePuppyConstantRector;\n\n";
+    $rectorContent .= "use WigglePuppy\\Rector\\Rebranding\\WordPressToWigglePuppyCommentRector;\n\n";
     $rectorContent .= "return static function (RectorConfig \$rectorConfig): void {\n";
     $rectorContent .= "    \$rectorConfig->paths([\n";
     $rectorContent .= "        __DIR__ . '/src',\n";
     $rectorContent .= "    ]);\n\n";
     $rectorContent .= "    \$rectorConfig->rule(WordPressToWigglePuppyStringRector::class);\n";
     $rectorContent .= "    \$rectorConfig->rule(WordPressToWigglePuppyCommentRector::class);\n";
-    $rectorContent .= "    \$rectorConfig->rule(WordPressToWigglePuppyConstantRector::class);\n";
     $rectorContent .= "};\n";
     $rectorContent .= "```\n";
 

@@ -9,7 +9,6 @@ use Rector\Config\RectorConfig;
 use Rector\CodeQuality\Rector\If_\SimplifyIfReturnBoolRector;
 use WigglePuppy\Rector\Rebranding\WordPressToWigglePuppyStringRector;
 use WigglePuppy\Rector\Rebranding\WordPressToWigglePuppyCommentRector;
-use WigglePuppy\Rector\Rebranding\WordPressToWigglePuppyConstantRector;
 
 return function (RectorConfig $rectorConfig): void {
     // Define paths to refactor
@@ -42,6 +41,5 @@ return function (RectorConfig $rectorConfig): void {
         // WordPress to WigglePuppy Rebranding Rules
         WordPressToWigglePuppyStringRector::class,
         WordPressToWigglePuppyCommentRector::class,
-        WordPressToWigglePuppyConstantRector::class,
     ]);
 };
