@@ -15,10 +15,13 @@ The following caveats must be strictly observed during the rebranding process:
    - Contributor lists
    - License attributions
 
-2. **Variable and Function Names**: Variable and function names containing "wordpress" must not be changed. For example:
+2. **PHP Identifiers**: All PHP identifiers containing "wordpress" must not be changed. This includes variable names, function names, class names, namespaces, and constants. For example:
    - `$wordpress_version` should remain as is
    - `get_wordpress_path()` should remain as is
    - Class methods like `init_wordpress()` should remain as is
+   - Class names like `WordPress_Plugin` should remain as is
+   - Namespaces like `\WordPress\Core` should remain as is
+   - Constants like `WORDPRESS_VERSION` should remain as is
 
 3. **Filenames and URLs**: Filenames and URLs containing "wordpress" must not be changed. For example:
    - `wordpress.php` should remain as is
