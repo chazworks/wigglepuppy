@@ -4,5 +4,27 @@
 # * matches any number of characters
 # / at the end of a pattern matches directories
 
+# Build/config files
 Gruntfile.js
 package-lock.json
+composer.json
+webpack.config.js
+.stylelintrc*.json
+.version-support-*.json
+src/wp-includes/sodium_compat/composer.json
+src/wp-content/themes/*/package.json
+src/wp-content/themes/*/package-lock.json
+src/wp-content/themes/*/styles/*.json
+src/wp-includes/blocks/*/block.json
+
+# XML files
+tests/phpunit/data/feed/*.xml
+tests/phpunit/data/export/*.xml
+tests/phpunit/data/formatting/*.xml
+phpunit.xml.dist
+tests/phpunit/multisite.xml
+tests/phpunit/build/logs/junit.xml
+
+# Minified files
+*.min.js
+*.min.css
