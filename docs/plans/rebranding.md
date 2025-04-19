@@ -42,6 +42,29 @@ The following caveats must be strictly observed during the rebranding process:
 
 7. **Whitespace Preservation**: The type and amount of whitespace on a line must not be changed. This includes spaces, tabs, and line endings.
 
+8. **Files Covered by .gitignore**: Files and directories specified in the .gitignore file should not be processed. These include:
+   - Configuration files with sensitive information
+   - Build and test tool files
+   - Generated files and directories
+   - Content files in wp-content
+   - Local environment configuration files
+
+9. **Minified Files**: Minified files should not be processed. These include:
+   - Minified CSS files (*.min.css)
+   - Minified JavaScript files (*.min.js)
+   - Any other compressed or optimized files
+
+10. **JavaScript Identifiers**: All JavaScript identifiers containing "wordpress" must not be changed. This includes variable names, function names, class names, module names, and npm namespaces. For example:
+   - `wordpressVersion` should remain as is
+   - `getWordpressPath()` should remain as is
+   - Class methods like `initWordpress()` should remain as is
+   - Module names like `wordpress-element` should remain as is
+   - npm namespaces like `@wordpress/components` should remain as is
+
+11. **Other Locations**: The following content should remain unchanged:
+   - News and announcements should remain as is
+   - Changelogs and version histories should remain as is
+
 ## Methodology for Finding Instances to Replace
 
 ### Search Patterns
