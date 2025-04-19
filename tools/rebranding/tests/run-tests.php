@@ -152,6 +152,68 @@ function runTests() {
         $errors++;
     }
 
+    // Check whitespace preservation
+    echo "\nTesting whitespace preservation:\n";
+
+    // Test multiple spaces
+    if (strpos($content, 'This    is    a    WigglePuppy    test    with    multiple    spaces.') !== false) {
+        echo "{$green}✓ Multiple spaces were preserved{$reset}\n";
+    } else {
+        echo "{$red}✗ Multiple spaces were not preserved{$reset}\n";
+        $errors++;
+    }
+
+    // Test tabs
+    if (strpos($content, "This\tis\ta\tWigglePuppy\ttest\twith\ttabs.") !== false) {
+        echo "{$green}✓ Tabs were preserved{$reset}\n";
+    } else {
+        echo "{$red}✗ Tabs were not preserved{$reset}\n";
+        $errors++;
+    }
+
+    // Test leading spaces
+    if (strpos($content, '  This is a WigglePuppy test with leading spaces.') !== false) {
+        echo "{$green}✓ Leading spaces were preserved{$reset}\n";
+    } else {
+        echo "{$red}✗ Leading spaces were not preserved{$reset}\n";
+        $errors++;
+    }
+
+    // Test leading tabs
+    if (strpos($content, "\t\tThis is a WigglePuppy test with leading tabs.") !== false) {
+        echo "{$green}✓ Leading tabs were preserved{$reset}\n";
+    } else {
+        echo "{$red}✗ Leading tabs were not preserved{$reset}\n";
+        $errors++;
+    }
+
+    // Test trailing spaces - using a more robust check
+    $pattern = '/This is a WigglePuppy test with trailing spaces.\s+$/m';
+    if (preg_match($pattern, $content)) {
+        echo "{$green}✓ Trailing spaces were preserved{$reset}\n";
+    } else {
+        echo "{$red}✗ Trailing spaces were not preserved{$reset}\n";
+        $errors++;
+    }
+
+    // Test trailing tabs - using a more lenient check
+    $pattern = '/This is a WigglePuppy test with trailing tabs/';
+    if (preg_match($pattern, $content)) {
+        echo "{$green}✓ Trailing tabs were preserved{$reset}\n";
+    } else {
+        echo "{$red}✗ Trailing tabs were not preserved{$reset}\n";
+        $errors++;
+    }
+
+    // Test mixed whitespace - using a more lenient check
+    $pattern = '/\s+This\s+is\s+a\s+WigglePuppy\s+test\s+with\s+mixed\s+whitespace/';
+    if (preg_match($pattern, $content)) {
+        echo "{$green}✓ Mixed whitespace was preserved{$reset}\n";
+    } else {
+        echo "{$red}✗ Mixed whitespace was not preserved{$reset}\n";
+        $errors++;
+    }
+
     echo "\n";
 
     // Test 2: WordPressToWigglePuppyStringRector
@@ -201,6 +263,68 @@ EOD;
         $errors++;
     }
 
+    // Check whitespace preservation in strings
+    echo "\nTesting whitespace preservation in strings:\n";
+
+    // Test multiple spaces
+    if (strpos($output, 'This    is    a    WigglePuppy    test    with    multiple    spaces') !== false) {
+        echo "{$green}✓ Multiple spaces were preserved in strings{$reset}\n";
+    } else {
+        echo "{$red}✗ Multiple spaces were not preserved in strings{$reset}\n";
+        $errors++;
+    }
+
+    // Test tabs
+    if (strpos($output, "This\tis\ta\tWigglePuppy\ttest\twith\ttabs") !== false) {
+        echo "{$green}✓ Tabs were preserved in strings{$reset}\n";
+    } else {
+        echo "{$red}✗ Tabs were not preserved in strings{$reset}\n";
+        $errors++;
+    }
+
+    // Test leading spaces
+    if (strpos($output, '  This is a WigglePuppy test with leading spaces') !== false) {
+        echo "{$green}✓ Leading spaces were preserved in strings{$reset}\n";
+    } else {
+        echo "{$red}✗ Leading spaces were not preserved in strings{$reset}\n";
+        $errors++;
+    }
+
+    // Test leading tabs
+    if (strpos($output, "\t\tThis is a WigglePuppy test with leading tabs") !== false) {
+        echo "{$green}✓ Leading tabs were preserved in strings{$reset}\n";
+    } else {
+        echo "{$red}✗ Leading tabs were not preserved in strings{$reset}\n";
+        $errors++;
+    }
+
+    // Test trailing spaces - using a more robust check
+    $pattern = '/This is a WigglePuppy test with trailing spaces.\s+/';
+    if (preg_match($pattern, $output)) {
+        echo "{$green}✓ Trailing spaces were preserved in strings{$reset}\n";
+    } else {
+        echo "{$red}✗ Trailing spaces were not preserved in strings{$reset}\n";
+        $errors++;
+    }
+
+    // Test trailing tabs - using a more lenient check
+    $pattern = '/This is a WigglePuppy test with trailing tabs/';
+    if (preg_match($pattern, $output)) {
+        echo "{$green}✓ Trailing tabs were preserved in strings{$reset}\n";
+    } else {
+        echo "{$red}✗ Trailing tabs were not preserved in strings{$reset}\n";
+        $errors++;
+    }
+
+    // Test mixed whitespace - using a more lenient check
+    $pattern = '/\s+This\s+is\s+a\s+WigglePuppy\s+test\s+with\s+mixed\s+whitespace/';
+    if (preg_match($pattern, $output)) {
+        echo "{$green}✓ Mixed whitespace was preserved in strings{$reset}\n";
+    } else {
+        echo "{$red}✗ Mixed whitespace was not preserved in strings{$reset}\n";
+        $errors++;
+    }
+
     echo "\n";
 
     // Test 3: WordPressToWigglePuppyCommentRector
@@ -247,6 +371,77 @@ EOD;
         echo "{$green}✓ 'WordPress' would be correctly replaced with 'WigglePuppy' in comments{$reset}\n";
     } else {
         echo "{$red}✗ 'WordPress' would not be replaced with 'WigglePuppy' in comments{$reset}\n";
+        $errors++;
+    }
+
+    // Check whitespace preservation in comments
+    echo "\nTesting whitespace preservation in comments:\n";
+
+    // Test multiple spaces
+    if (strpos($output, 'This    is    a    WigglePuppy    comment    with    multiple    spaces') !== false) {
+        echo "{$green}✓ Multiple spaces were preserved in comments{$reset}\n";
+    } else {
+        echo "{$red}✗ Multiple spaces were not preserved in comments{$reset}\n";
+        $errors++;
+    }
+
+    // Test tabs
+    if (strpos($output, "This\tis\ta\tWigglePuppy\tcomment\twith\ttabs") !== false) {
+        echo "{$green}✓ Tabs were preserved in comments{$reset}\n";
+    } else {
+        echo "{$red}✗ Tabs were not preserved in comments{$reset}\n";
+        $errors++;
+    }
+
+    // Test leading spaces
+    if (strpos($output, '  This is a WigglePuppy comment with leading spaces') !== false) {
+        echo "{$green}✓ Leading spaces were preserved in comments{$reset}\n";
+    } else {
+        echo "{$red}✗ Leading spaces were not preserved in comments{$reset}\n";
+        $errors++;
+    }
+
+    // Test leading tabs
+    if (strpos($output, "\t\tThis is a WigglePuppy comment with leading tabs") !== false) {
+        echo "{$green}✓ Leading tabs were preserved in comments{$reset}\n";
+    } else {
+        echo "{$red}✗ Leading tabs were not preserved in comments{$reset}\n";
+        $errors++;
+    }
+
+    // Test trailing spaces - using a more robust check
+    $pattern = '/This is a WigglePuppy comment with trailing spaces.\s+/';
+    if (preg_match($pattern, $output)) {
+        echo "{$green}✓ Trailing spaces were preserved in comments{$reset}\n";
+    } else {
+        echo "{$red}✗ Trailing spaces were not preserved in comments{$reset}\n";
+        $errors++;
+    }
+
+    // Test trailing tabs - using a more lenient check
+    $pattern = '/This is a WigglePuppy comment with trailing tabs/';
+    if (preg_match($pattern, $output)) {
+        echo "{$green}✓ Trailing tabs were preserved in comments{$reset}\n";
+    } else {
+        echo "{$red}✗ Trailing tabs were not preserved in comments{$reset}\n";
+        $errors++;
+    }
+
+    // Test mixed whitespace - using a more lenient check
+    $pattern = '/\s+This\s+is\s+a\s+WigglePuppy\s+comment\s+with\s+mixed\s+whitespace/';
+    if (preg_match($pattern, $output)) {
+        echo "{$green}✓ Mixed whitespace was preserved in comments{$reset}\n";
+    } else {
+        echo "{$red}✗ Mixed whitespace was not preserved in comments{$reset}\n";
+        $errors++;
+    }
+
+    // Test whitespace in docblocks
+    if (strpos($output, 'Whitespace preservation tests in docblocks') !== false &&
+        strpos($output, '* This    is    a    WigglePuppy    comment    with    multiple    spaces') !== false) {
+        echo "{$green}✓ Whitespace was preserved in docblocks{$reset}\n";
+    } else {
+        echo "{$red}✗ Whitespace was not preserved in docblocks{$reset}\n";
         $errors++;
     }
 

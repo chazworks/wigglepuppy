@@ -99,6 +99,7 @@ The rebranding process respects the following caveats:
 4. References to WordPress as an organization remain unchanged
 5. Casing is preserved during replacement (WordPress → WigglePuppy, wordpress → wigglepuppy, WORDPRESS → WIGGLEPUPPY)
 6. Lines containing both "wordpress" and "wigglepuppy" remain unchanged
+7. The type and amount of whitespace on a line must not be changed
 
 ## Troubleshooting
 

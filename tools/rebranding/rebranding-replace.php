@@ -98,8 +98,18 @@ function replaceWordPress($line, $replacementPatterns) {
 
 // Function to process a file
 function processFile($filePath, $skipPatterns, $replacementPatterns, &$log) {
+    // Read the file content preserving the original line endings
     $content = file_get_contents($filePath);
-    $lines = explode("\n", $content);
+
+    // Detect line endings (CR, LF, or CRLF)
+    $lineEnding = "\n"; // Default to LF
+    if (strpos($content, "\r\n") !== false) {
+        $lineEnding = "\r\n"; // CRLF (Windows)
+    } elseif (strpos($content, "\r") !== false) {
+        $lineEnding = "\r"; // CR (old Mac)
+    }
+
+    $lines = explode($lineEnding, $content);
     $modified = false;
     $replacements = 0;
 
@@ -114,7 +124,7 @@ function processFile($filePath, $skipPatterns, $replacementPatterns, &$log) {
             continue;
         }
 
-        // Replace WordPress with WigglePuppy
+        // Replace WordPress with WigglePuppy while preserving whitespace
         $newLine = replaceWordPress($line, $replacementPatterns);
 
         // If the line was changed, update it
@@ -133,9 +143,9 @@ function processFile($filePath, $skipPatterns, $replacementPatterns, &$log) {
         }
     }
 
-    // If the file was modified, write the changes back
+    // If the file was modified, write the changes back preserving original line endings
     if ($modified) {
-        file_put_contents($filePath, implode("\n", $lines));
+        file_put_contents($filePath, implode($lineEnding, $lines));
         return $replacements;
     }
 

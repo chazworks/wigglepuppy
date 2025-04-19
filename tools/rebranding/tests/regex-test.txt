@@ -11,3 +11,12 @@ This is a wordpress.php file.
 
 // This line has both wordpress and wigglepuppy and should not be changed.
 This is a wordpress to wigglepuppy conversion test.
+
+// Whitespace preservation tests:
+This    is    a    WordPress    test    with    multiple    spaces.
+This	is	a	WordPress	test	with	tabs.
+  This is a WordPress test with leading spaces.
+		This is a WordPress test with leading tabs.
+This is a WordPress test with trailing spaces.
+This is a WordPress test with trailing tabs.
+  This    is    a    WordPress    test    with    mixed    whitespace.

@@ -58,7 +58,8 @@ CODE_SAMPLE
             return null;
         }
 
-        // Replace WordPress with WigglePuppy preserving case
+        // Replace WordPress with WigglePuppy preserving case and whitespace
+        // Using word boundary (\b) ensures we only replace the exact word and preserve surrounding whitespace
         $newContent = preg_replace('/\bWordPress\b/', 'WigglePuppy', $content);
         $newContent = preg_replace('/\bwordpress\b/', 'wigglepuppy', $newContent);
         $newContent = preg_replace('/\bWORDPRESS\b/', 'WIGGLEPUPPY', $newContent);

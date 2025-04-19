@@ -28,6 +28,28 @@ function test_function() {
  * This is a wordpress to wigglepuppy conversion test.
  */
 
+// Whitespace preservation tests:
+// This    is    a    WordPress    comment    with    multiple    spaces.
+// This	is	a	WordPress	comment	with	tabs.
+//   This is a WordPress comment with leading spaces.
+//		This is a WordPress comment with leading tabs.
+// This is a WordPress comment with trailing spaces.
+// This is a WordPress comment with trailing tabs.
+//   This    is    a    WordPress    comment    with    mixed    whitespace.
+
+/**
+ * Whitespace preservation tests in docblocks:
+ *
+ * This    is    a    WordPress    comment    with    multiple    spaces.
+ * This	is	a	WordPress	comment	with	tabs.
+ *   This is a WordPress comment with leading spaces.
+ *		This is a WordPress comment with leading tabs.
+ * This is a WordPress comment with trailing spaces.
+ * This is a WordPress comment with trailing tabs.
+ *   This    is    a    WordPress    comment    with    mixed    whitespace.
+ */
+
 // Expected results after transformation:
 // All WordPress/wordpress/WORDPRESS in comments should be replaced with
 // WigglePuppy/wigglepuppy/WIGGLEPUPPY except for the cases mentioned in the caveats.
+// All whitespace should be preserved exactly as it appears in the original comments.

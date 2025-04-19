@@ -40,6 +40,8 @@ The following caveats must be strictly observed during the rebranding process:
 
 6. **Co-occurrence of Terms**: Lines containing both "wordpress" and "wigglepuppy" (in any casing) on the same line must remain unchanged. These lines should be appropriately noted in generated documentation.
 
+7. **Whitespace Preservation**: The type and amount of whitespace on a line must not be changed. This includes spaces, tabs, and line endings.
+
 ## Methodology for Finding Instances to Replace
 
 ### Search Patterns
